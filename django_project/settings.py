@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     "crispy_bootstrap5",
     #Local
     "accounts",
-    "pages",
+    "pages",  # new
+    "articles",
 ]
 
 MIDDLEWARE = [
@@ -133,7 +134,8 @@ AUTH_USER_MODEL = "accounts.CustomUser"
 LOGIN_REDIRECT_URL = "home"
 LOGOUT_REDIRECT_URL = "home"
 
-CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
-CRISPY_TEMPLATE_PACK = "bootstrap5"
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"  # new
+CRISPY_TEMPLATE_PACK = "bootstrap5"  # new
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"  # new
 
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+TIME_ZONE = "America/New_York"
