@@ -1,18 +1,17 @@
 from django.contrib import admin
-from .models import Article
+from .models import Article, Comment
 
 
 # Register your models here.
 
-class ArticleAdmin3(admin.ModelAdmin):
-    list_display2 = [
-        "title",
-        "body",
-    ]
 
+class CommentInline(admin.StackedInline):
+    model = Comment
+    extra = 0
 
 class ArticleAdmin2(admin.ModelAdmin):
-    list_display2 = [
+    inlines = [CommentInline]
+    list_display = [
         "title",
         "body",
         "author",
@@ -20,7 +19,5 @@ class ArticleAdmin2(admin.ModelAdmin):
     ]
 
 
-
-
 admin.site.register(Article, ArticleAdmin2)
-
+admin.site.register(Comment)
