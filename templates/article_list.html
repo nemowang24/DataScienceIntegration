@@ -17,7 +17,7 @@
                 <p>{{ article.body }}</p>
                 {% if article.author.pk == request.user.pk %}
                     <a href="{% url 'article_edit' article.pk %}">Edit</a>
-                    <a href="{% url 'article_=' article.pk %}">Delete</a>
+                    <a href="{% url 'article_delete' article.pk %}">Delete</a>
                 {% endif %}
                 <a href="{{ article.get_absolute_url }}">New Comment</a>
             </div>

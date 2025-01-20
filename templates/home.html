@@ -1,19 +1,19 @@
-{%  extends "base.html" %}
+{% extends "base.html" %}
 
-{%  block title %}Home Page{% endblock title%}
+{% block title %}Home Page{% endblock title %}
 
-{%  block content %}
+{% block content %}
     {% if user.is_authenticated %}
         Hi {{ user.username }}! You are {{ user.age }} years old.
-        <form action = "{% url 'logout' %}" method = "post">
+        <form action="{% url 'logout' %}" method="post">
             {% csrf_token %}
-            <input type = "submit" value = "Logout">
+            <input type="submit" value="Logout">
         </form>
         <br/>
-        <p><a class="btn btn-primary" href="{%  url 'article_list' %}" role="button">View all articles</a></p>
-    {%  else %}
+        <p><a class="btn btn-primary" href="{% url 'article_list' %}" role="button">View all articles</a></p>
+    {% else %}
         <p>You are not logged in</p>
-        <a href = "{% url 'login' %}">Login</a>
-        <a href = "{% url 'signup' %}">Sign Up</a>
+        <a href="{% url 'login' %}">Login</a>
+        <a href="{% url 'signup' %}">Sign Up</a>
     {% endif %}
 {% endblock content %}
