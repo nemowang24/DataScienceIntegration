@@ -4,6 +4,7 @@ from django.views.generic.edit import UpdateView, DeleteView,CreateView
 from django.urls import reverse_lazy, reverse
 from django.contrib.auth.mixins import LoginRequiredMixin,UserPassesTestMixin
 from .forms import CommentForm
+from django import forms
 
 from .models import Article
 
@@ -12,13 +13,18 @@ class ArticleListView(LoginRequiredMixin, ListView):
     model = Article
     template_name = "article_list.html"
 
+class ContactForm(CommentForm):
+    name=forms.CharField(label="Name")
+    # comment=forms.CharField(label="Comment")
+
 class CommentGet(DetailView):
     model=Article
     template_name="article_detail.html"
 
     def get_context_data(self, **kwargs):
         context=super().get_context_data(**kwargs)
-        context["form"]=CommentForm()
+        # context["form"]=CommentForm()
+        context["form"]=ContactForm()
         return context
 
 class CommentPost(SingleObjectMixin,FormView):
