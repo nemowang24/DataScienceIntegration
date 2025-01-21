@@ -17,6 +17,7 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path, include
+from django.conf import settings
 # from django.views.generic.base import TemplateView
 
 urlpatterns = [
@@ -26,3 +27,8 @@ urlpatterns = [
     path("", include("pages.urls")),
     path("articles/",include("articles.urls")),
 ]
+
+if settings.DEBUG:  # Allows debug_toolbar only in DEBUG mode
+    import debug_toolbar
+
+    urlpatterns += [path('__debug__/', include(debug_toolbar.urls))]
