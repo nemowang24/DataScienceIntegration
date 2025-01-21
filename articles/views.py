@@ -8,6 +8,9 @@ from django import forms
 
 from .models import Article
 
+from django.core.mail import send_mail
+
+
 # Create your views here.
 class ArticleListView(LoginRequiredMixin, ListView):
     model = Article
