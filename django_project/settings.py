@@ -174,10 +174,17 @@ EMAIL_HOST_PASSWORD = env.str('EMAIL_HOST_PASSWORD')
 
 
 TIME_ZONE = "America/New_York"
-CSRF_TRUSTED_ORIGINS = ["https://*.herokuapp.com"]
+CSRF_TRUSTED_ORIGINS = ["https://*.tropicw.net"]
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+SESSION_COOKIE_NAME = 'sessionid'
+SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_AGE = 3600  # 1 hour
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 if DEBUG:
     INTERNAL_IPS = ('127.0.0.1',)
@@ -205,3 +212,4 @@ if DEBUG:
     DEBUG_TOOLBAR_CONFIG = {
         'INTERCEPT_REDIRECTS': False,
     }
+
