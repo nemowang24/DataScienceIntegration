@@ -5,10 +5,16 @@ from django.views.generic import TemplateView
 from django.views.decorators.csrf import csrf_exempt
 import json
 import logging
+import matplotlib.pyplot as plt
+from django.http import FileResponse
+import os
 from rest_framework.decorators import api_view
 from rest_framework import status, request
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
+from api.models import Clicks
+import matplotlib.pyplot as plt
+from matplotlib.ticker import MultipleLocator
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +36,67 @@ class Intro_view(TemplateView):
 
 
 class Practice_view(TemplateView):
-    template_name = "helldivers/shooting_practice2.html"
+    template_name = "helldivers/shooting_practice.html"
+
+class Statistic_view(TemplateView):
+    template_name = "helldivers/statistic.html"
+
+    def generate_histogram(self):
+        # Extract data from Clicks table
+        data = Clicks.objects.values_list('counter', flat=True)
+        #
+        # # Generate histogram
+        # plt.figure(figsize=(20, 12))
+        # plt.hist(data, bins=100, color='blue', alpha=0.7)
+        # plt.title('Clicks Distribution')
+        # plt.xlabel('Counter Value', fontsize=16)
+        # plt.ylabel('Frequency', fontsize=16)
+        # plt.xticks(ticks=range(0,100,5), rotation=45)
+        #
+        # # Save plot to an image file
+        # file_path = os.path.join('static', 'histogram.png')
+        # plt.savefig(file_path)
+        # plt.close()
+
+        plt.figure(figsize=(20, 12))
+        plt.hist(data, bins=100, color='blue', alpha=0.7)
+        plt.title('Clicks Distribution')
+        plt.xlabel('Counter Value')
+        plt.ylabel('Frequency')
+
+        # Set major ticks (already in the code, every 5)
+        plt.xticks(ticks=range(0, 100, 5), rotation=45)
+
+        # Add minor ticks (e.g., every 1)
+        ax = plt.gca()  # Get current axis
+        ax.xaxis.set_minor_locator(MultipleLocator(1))  # Sub ticks every 1 unit
+        ax.tick_params(axis='x', which='minor', length=4, color='red')  # Customize minor ticks (optional)
+
+        # Show grid with minor ticks if desired
+        ax.grid(visible=True, which='both', axis='x', linestyle='--', color='gray', alpha=0.7)
+
+        # Save or show the plot
+        file_path = os.path.join('static', 'histogram.png')
+        plt.savefig(file_path)
+        plt.close()
+
+        return file_path
+
+    # def get(self, request, *args, **kwargs):
+    #     # First, generate the histogram
+    #     file_path = self.generate_histogram()
+    #
+    #     # Return the file as a response
+    #     return FileResponse(open(file_path, 'rb'), content_type='image/png')
+
+    def get_context_data(self, **kwargs):
+        file_path = self.generate_histogram()
+        # Get the existing context
+        context = super().get_context_data(**kwargs)
+        # Add the file path as a variable to the context
+        context["file_path"] = file_path
+        return context
+
 
 
 # class API_view(View):

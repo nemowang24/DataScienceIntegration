@@ -13,7 +13,7 @@
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            margin-top: 1%;
+            margin-top: 0%;
         }
 
         .counter {
@@ -40,10 +40,6 @@
             height: auto;
             display: block;
             margin: 0 auto;
-        }
-
-        .navbar-brand {
-            color: red !important;
         }
 
         .description {
@@ -94,7 +90,7 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="">Helldivers</a>
+                    <a class="nav-link active" aria-current="page" href="/helldivers/intro/" style="color: red";>Helldivers</a>
                 </li>
                 {% if user.is_authenticated %}
                     <li><a href="{% url 'article_new' %}" class="nav-link px-2 link-dark">+ New</a></li>

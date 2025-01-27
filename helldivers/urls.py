@@ -1,5 +1,5 @@
 from django.urls import path, include
-from .views import Intro_view, Practice_view
+from .views import Intro_view, Practice_view, Statistic_view
 from django.conf import settings
 from rest_framework import routers
 
@@ -12,6 +12,8 @@ urlpatterns = [
     path("practice/", Practice_view.as_view(), name="helldivers_practice"),
     # path('api/counter/', views.api_counter, name='counter_api'),
     path("intro/", Intro_view.as_view(), name="helldivers_intro"),
+
+    path("statistic/", Statistic_view.as_view(), name="counter_statistic"),
     # path("", include(router.urls)),
 
 ]

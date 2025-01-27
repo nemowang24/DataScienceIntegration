@@ -1,5 +1,6 @@
 {% extends "helldivers/base.html" %}
 
+
 {% block title %}bootcamp{% endblock title %}
 
 {% block myscripts %}
@@ -7,7 +8,6 @@
         let counterValue = 0;
         let counterInterval = null;
         let isRunning = false; // Track whether the counter is running or stopped
-
 
         // Helper function to reset the game state
         function resetGame() {
@@ -48,14 +48,61 @@
                 toggleButton.textContent = "Start"; // Reset button back to "Start"
 
                 // Check result
-                if (counterValue === 50) {
-                    resultElement.textContent = "Success! You clicked at 50!";
-                } else {
-                    resultElement.textContent = `Incorrect! You clicked at ${counterValue}. Try again.`;
+                let resultMessage = `Incorrect! You clicked at ${counterValue}. Try again.`;
+                if (Math.abs(counterValue - 50) <= 3) {
+                    if (Math.abs(counterValue - 50) === 0) {
+                        resultMessage = `Succeed! You clicked at ${counterValue}. You are a genius!`;
+                    } else if (Math.abs(counterValue - 50) <= 1) {
+                        resultMessage = `Awesome! You clicked at ${counterValue}.`;
+                    } else if (Math.abs(counterValue - 50) <= 2) {
+                        resultMessage = `Very Good! You clicked at ${counterValue}.`;
+                    } else if (Math.abs(counterValue - 50) <= 3) {
+                        resultMessage = `Not Bad! You clicked at ${counterValue}.`;
+                    }
+                    // Redirect to "/statistic/" to view statistics after few seconds
+                    setTimeout(() => {
+                        window.location.href = '/helldivers/statistic/';
+                    }, 2000); // 2-second delay for the user to see the success message
                 }
+
+                resultElement.textContent = resultMessage;
+
+                // Make RESTful API call to the server
+                sendCounterValue(counterValue);
             }
         }
 
+        function getCsrfToken() {
+            return document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        }
+
+        async function sendCounterValue(value) {
+            try {
+
+                const csrfToken = getCsrfToken();
+
+
+                const response = await fetch('/api/counter/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken, // Add the CSRF token here
+                    },
+                    body: JSON.stringify({counterValue: value}),
+                });
+
+
+                // Handle server response
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log(data.message);
+                } else {
+                    console.error('API request failed:', response.status);
+                }
+            } catch (error) {
+                console.error('Error occurred while sending API request:', error);
+            }
+        }
     </script>
 {% endblock myscripts %}
 
@@ -64,8 +111,9 @@
     <div class="description">
         <p>
             Welcome to the counter challenge! Click the 'Start' button to begin counting from 0 to 100.
-            Your goal is to stop the counter precisely at 50 by clicking the 'Stop' button. <hr>
-            When succeeded, you can see all the helldivers performance.
+            Your goal is to stop the counter precisely at 50 by clicking the 'Stop' button.
+        <hr>
+        When succeeded, you can see all the helldivers performance.
         </p>
     </div>
     <video autoplay loop muted controls class="video-player">
