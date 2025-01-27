@@ -48,10 +48,10 @@
                 toggleButton.textContent = "Start"; // Reset button back to "Start"
 
                 // Check result
-                let resultMessage = `Incorrect! You clicked at ${counterValue}. Try again.`;
+                let resultMessage = `Incorrect! You clicked at ${counterValue}. Try again. Remember, More challenging missions yield greater rewards.`;
                 if (Math.abs(counterValue - 50) <= 3) {
                     if (Math.abs(counterValue - 50) === 0) {
-                        resultMessage = `Succeed! You clicked at ${counterValue}. You are a genius!`;
+                        resultMessage = `Superiro valor! You clicked at ${counterValue}. You are a genius!`;
                     } else if (Math.abs(counterValue - 50) <= 1) {
                         resultMessage = `Awesome! You clicked at ${counterValue}.`;
                     } else if (Math.abs(counterValue - 50) <= 2) {
