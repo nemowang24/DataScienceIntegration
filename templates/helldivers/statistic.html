@@ -9,11 +9,41 @@
             width: 70%; /* 70% of the window width */
             height: auto; /* Maintain the aspect ratio */
         }
+
+        /* CSS for the rolling text effect */
+        @keyframes rollingText {
+            0% {
+                transform: translateX(100%); /* Start just off the right of the screen */
+            }
+            100% {
+                transform: translateX(-100%); /* End just off the left of the screen */
+            }
+        }
+
+        .rolling-text {
+            width: 100%; /* Full width */
+            overflow: hidden; /* Hide overflowing text */
+            white-space: nowrap; /* Prevent text from wrapping */
+            position: relative;
+            background: #000; /* Optional: Give a background color for visibility */
+            color: #fff; /* Text color */
+            font-size: 24px; /* Larger font for visibility */
+        }
+
+        .rolling-text span {
+            display: inline-block;
+            animation: rollingText 10s linear infinite; /* Roll text continuously */
+        }
     </style>
 {% endblock myscripts %}
 
 {% block myvideo %}
     {% load static %}
+
+    <!-- HTML for the rolling text -->
+    <div class="rolling-text">
+        <span>to be continued</span>
+    </div>
 
     <img src="{% static 'histogram.png' %}" alt="Histogram Image">
 

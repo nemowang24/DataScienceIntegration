@@ -4,5 +4,5 @@ db.sqlite3
 .idea
 .env
 *.pdf
-.mp4
-.png
+*.mp4
+*.png
