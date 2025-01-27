@@ -2,8 +2,18 @@ from django.http import JsonResponse, HttpResponse
 from django.views import View
 from django.shortcuts import render
 from django.views.generic import TemplateView
+from django.views.decorators.csrf import csrf_exempt
+import json
+import logging
+from rest_framework.decorators import api_view
+from rest_framework import status, request
+from rest_framework.viewsets import ViewSet
+from rest_framework.response import Response
 
-class intro_view(TemplateView):
+logger = logging.getLogger(__name__)
+
+
+class Intro_view(TemplateView):
     template_name = "helldivers/intro.html"
 
     def get_context_data(self, **kwargs):
@@ -14,9 +24,140 @@ class intro_view(TemplateView):
             self.request.session.save()
             session_id = self.request.session.session_key
 
-        context=super().get_context_data(**kwargs)
-        context["session_id"]=session_id
+        context = super().get_context_data(**kwargs)
+        context["session_id"] = session_id
         return context
 
-    # def get(self, request, *args, **kwargs):
-    #     return HttpResponse("<h1>Welcome to the Helldivers Home Page!</h1>")
+
+class Practice_view(TemplateView):
+    template_name = "helldivers/shooting_practice2.html"
+
+
+# class API_view(View):
+#     @csrf_exempt
+#     def post(self, request, *args, **kwargs):
+#         print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+#         try:
+#             # Parse JSON body data from the POST request
+#             body = json.loads(request.body)
+#             counter_value = body.get('counterValue', 0)  # Default value is 0 if not provided
+#
+#             # Your business logic here
+#             if counter_value == 50:
+#                 return JsonResponse({"message": "Success! You hit 50.", "status": "success"}, status=200)
+#             else:
+#                 return JsonResponse({
+#                     "message": f"You clicked at {counter_value}. Try again.",
+#                     "status": "failure"
+#                 }, status=200)
+#         except Exception as e:
+#             return JsonResponse({
+#                 "error": "Invalid data or server error.",
+#                 "details": str(e)
+#             }, status=400)
+
+# @csrf_exempt
+# @api_view(['POST'])
+# def api_counter(request):
+#     logger.debug("aaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+#
+#     if request.method == 'POST':
+#         try:
+#             # Parse the JSON data sent with the request
+#             data = json.loads(request.body)
+#             counter_value = data.get('counterValue', None)
+#
+#             # Validate the counter value
+#             if counter_value is None or not isinstance(counter_value, int):
+#                 return JsonResponse({'error': 'Invalid counter value provided'}, status=400)
+#
+#             # Perform any processing you'd like (e.g., save to a database or run logic)
+#             # Example: If you want to log success at a specific value
+#             if counter_value == 50:
+#                 message = "Success! You hit 50!"
+#             else:
+#                 message = f"Counter value was: {counter_value}"
+#
+#             # Example: Return a success response with custom message
+#             return JsonResponse({'message': message}, status=200)
+#
+#         except json.JSONDecodeError:
+#             return JsonResponse({'error': 'Invalid JSON'}, status=400)
+#     else:
+#         # Handle non-POST requests
+#         return JsonResponse({'error': 'Only POST method is allowed'}, status=405)
+#
+#
+# class TaskViewSet2(ViewSet):
+#     def api_counter(request):
+#         logger.debug("aaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+#         if request.method == 'POST':
+#             try:
+#                 # Parse the JSON data sent with the request
+#                 data = json.loads(request.body)
+#                 counter_value = data.get('counterValue', None)
+#
+#                 # Validate the counter value
+#                 if counter_value is None or not isinstance(counter_value, int):
+#                     return JsonResponse({'error': 'Invalid counter value provided'}, status=400)
+#
+#                 # Perform any processing you'd like (e.g., save to a database or run logic)
+#                 # Example: If you want to log success at a specific value
+#                 if counter_value == 50:
+#                     message = "Success! You hit 50!"
+#                 else:
+#                     message = f"Counter value was: {counter_value}"
+#
+#                 # Example: Return a success response with custom message
+#                 return JsonResponse({'message': message}, status=200)
+#
+#             except json.JSONDecodeError:
+#                 return JsonResponse({'error': 'Invalid JSON'}, status=400)
+#         else:
+#             # Handle non-POST requests
+#             return JsonResponse({'error': 'Only POST method is allowed'}, status=405)
+#
+#     def create(self, request):
+#         # Example implementation for POST /api/counter/
+#         return Response(
+#             {"message": "Task created successfully"},
+#             status=status.HTTP_201_CREATED
+#         )
+#
+#     # @csrf_exempt
+#     def post(self, request, *args, **kwargs):
+#         logger.debug("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb")
+#         try:
+#             # Parse data from the request body
+#             data = json.loads(request.body)
+#             counter_value = data.get('counterValue', None)
+#
+#             # Process the counter value (you can add your logic here)
+#             print(f"Received counter value: {counter_value}")
+#
+#             # Return a JSON response back to the client
+#             return JsonResponse({'message': f'Counter value {counter_value} received successfully.'}, status=200)
+#         except Exception as e:
+#             return JsonResponse({'error': 'Invalid request data', 'details': str(e)}, status=400)
+
+
+# class TaskViewSet(ViewSet):
+#     """
+#     ViewSet to handle custom operations for the /api/counter/ endpoint.
+#     """
+#
+#     def list(self, request):
+#         """
+#         Handle GET requests to return a list of tasks.
+#         """
+#         return Response({"message": "This is a list of tasks."})
+#
+#     def create(self, request):
+#         """
+#         Handle POST requests to create a new task.
+#         """
+#         task_data = request.data  # Accessing data sent in the POST request
+#         return Response(
+#             {"message": "Task created successfully!", "data": task_data},
+#             status=status.HTTP_201_CREATED
+#         )

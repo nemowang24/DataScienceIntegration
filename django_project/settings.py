@@ -30,7 +30,7 @@ SECRET_KEY = env.str("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool("DEBUG", default=False)
 
-ALLOWED_HOSTS = ["34.231.220.146", "localhost", "127.0.0.1"]
+ALLOWED_HOSTS = ["192.168.1.240", "34.231.220.146", "localhost", "127.0.0.1"]
 
 
 # Application definition
@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "whitenoise.runserver_nostatic",
     "django.contrib.staticfiles",
+    'rest_framework',
     #3rd party
     "crispy_forms",
     "crispy_bootstrap5",
@@ -50,6 +51,8 @@ INSTALLED_APPS = [
     "accounts",
     "pages",
     "articles",
+    "helldivers",
+    "api",
 ]
 
 MIDDLEWARE = [
@@ -174,7 +177,10 @@ EMAIL_HOST_PASSWORD = env.str('EMAIL_HOST_PASSWORD')
 
 
 TIME_ZONE = "America/New_York"
-CSRF_TRUSTED_ORIGINS = ["https://*.tropicw.net"]
+CSRF_TRUSTED_ORIGINS = ["https://*.tropicw.net", "https://127.0.0.1"]
+CSRF_COOKIE_NAME = "csrftoken"  # Default name for the CSRF cookie
+CSRF_HEADER_NAME = "HTTP_X_CSRFTOKEN"  # Header used for the token
+
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
@@ -186,30 +192,56 @@ SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_AGE = 3600  # 1 hour
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
-if DEBUG:
-    INTERNAL_IPS = ('127.0.0.1',)
-    INSTALLED_APPS += (
-        'debug_toolbar',
-    )
-    MIDDLEWARE += (
-        'debug_toolbar.middleware.DebugToolbarMiddleware',
-    )
-    DEBUG_TOOLBAR_PANELS = [
-            'debug_toolbar.panels.versions.VersionsPanel',
-            'debug_toolbar.panels.timer.TimerPanel',
-            'debug_toolbar.panels.settings.SettingsPanel',
-            'debug_toolbar.panels.headers.HeadersPanel',
-            'debug_toolbar.panels.request.RequestPanel',
-            'debug_toolbar.panels.sql.SQLPanel',
-            'debug_toolbar.panels.staticfiles.StaticFilesPanel',
-            'debug_toolbar.panels.templates.TemplatesPanel',
-            'debug_toolbar.panels.cache.CachePanel',
-            'debug_toolbar.panels.signals.SignalsPanel',
-            'debug_toolbar.panels.logging.LoggingPanel',
-            'debug_toolbar.panels.redirects.RedirectsPanel',
-        ]
+# if DEBUG:
+#     INTERNAL_IPS = ('127.0.0.1',)
+#     INSTALLED_APPS += (
+#         'debug_toolbar',
+#     )
+#     MIDDLEWARE += (
+#         'debug_toolbar.middleware.DebugToolbarMiddleware',
+#     )
+#     DEBUG_TOOLBAR_PANELS = [
+#             'debug_toolbar.panels.versions.VersionsPanel',
+#             'debug_toolbar.panels.timer.TimerPanel',
+#             'debug_toolbar.panels.settings.SettingsPanel',
+#             'debug_toolbar.panels.headers.HeadersPanel',
+#             'debug_toolbar.panels.request.RequestPanel',
+#             'debug_toolbar.panels.sql.SQLPanel',
+#             'debug_toolbar.panels.staticfiles.StaticFilesPanel',
+#             'debug_toolbar.panels.templates.TemplatesPanel',
+#             'debug_toolbar.panels.cache.CachePanel',
+#             'debug_toolbar.panels.signals.SignalsPanel',
+#             'debug_toolbar.panels.logging.LoggingPanel',
+#             'debug_toolbar.panels.redirects.RedirectsPanel',
+#         ]
+#
+#     DEBUG_TOOLBAR_CONFIG = {
+#         'INTERCEPT_REDIRECTS': False,
+#     }
 
-    DEBUG_TOOLBAR_CONFIG = {
-        'INTERCEPT_REDIRECTS': False,
-    }
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+    ),
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+    ),
+}
 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+        },
+    },
+}

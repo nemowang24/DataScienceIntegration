@@ -3,66 +3,25 @@
 {% block title %}bootcamp{% endblock title %}
 
 {% block myscripts %}
-    <script>
-        let counterValue = 0;
-        let counterInterval = null;
-        let isRunning = false; // Track whether the counter is running or stopped
 
-        // Function to handle button click
-        function handleClick() {
-            const counterElement = document.getElementById('counter');
-            const resultElement = document.getElementById('result');
-            const toggleButton = document.getElementById('toggle-btn');
-
-            if (!isRunning) {
-                // Start the counter
-                resetGame();
-                toggleButton.textContent = "Stop"; // Change button to "Stop"
-                isRunning = true;
-
-                counterInterval = setInterval(() => {
-                    counterValue++;
-                    counterElement.textContent = counterValue;
-
-                    // Automatically stop at 100
-                    if (counterValue === 100) {
-                        clearInterval(counterInterval);
-                        isRunning = false;
-                        toggleButton.textContent = "Start";
-                        resultElement.textContent = "You missed it! Try again.";
-                    }
-                }, 100); // Counter updates every 100ms
-            } else {
-                // Stop the counter
-                clearInterval(counterInterval);
-                isRunning = false;
-                toggleButton.textContent = "Start"; // Reset button back to "Start"
-
-                // Check result
-                if (counterValue === 50) {
-                    resultElement.textContent = "Success! You clicked at 50!";
-                } else {
-                    resultElement.textContent = `Incorrect! You clicked at ${counterValue}. Try again.`;
-                }
-            }
-        }
-
-        // Helper function to reset the game state
-        function resetGame() {
-            clearInterval(counterInterval); // Clear any existing interval
-            document.getElementById('counter').textContent = '0';
-            document.getElementById('result').textContent = '';
-            counterValue = 0;
-        }
-    </script>
 {% endblock myscripts %}
 
 {% block myvideo %}
     {% load static %}
-    <video autoplay loop muted controls>
-        <source src="{% static 'helldivers/intro.mp4' %}" type="video/mp4">
+
+    <video autoplay loop muted controls class="video-player">
+        <source src="{% static 'helldivers/Self_Revive.mp4' %}" type="video/mp4">
     </video>
-    <div class="counter" id="counter">0</div>
-    <button id="toggle-btn" class="toggle-button" onclick="handleClick()">Start</button>
-    <div class="result" id="result"></div>
+
+
+    <div class="intro-text">
+        <p>
+            As a Helldiver Soldier, you must click the stop when the counter display exactly 50. Doing right thing at right time can save your life.
+            Got it? Let's go!
+        </p>
+    </div>
+    <div class="button-container">
+        <a href="{% url 'helldivers_practice' %}" class="btn btn-primary">Start Practice</a>
+    </div>
+
 {% endblock myvideo %}
