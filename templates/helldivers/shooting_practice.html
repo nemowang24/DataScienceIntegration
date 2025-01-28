@@ -21,7 +21,7 @@
         function handleClick() {
             const counterElement = document.getElementById('counter');
             const resultElement = document.getElementById('result');
-            const toggleButton = document.getElementById('toggle-btn');
+            const toggleButton = document.getElementById('button-container');
 
             if (!isRunning) {
                 // Start the counter
@@ -48,7 +48,7 @@
                 toggleButton.textContent = "Start"; // Reset button back to "Start"
 
                 // Check result
-                let resultMessage = `Incorrect! You clicked at ${counterValue}. Try again. Remember, More challenging missions yield greater rewards.`;
+                let resultMessage = `Incorrect! You clicked at ${counterValue}. Try again. When succeeded, you can see all the helldivers performance.`;
                 if (Math.abs(counterValue - 50) <= 3) {
                     if (Math.abs(counterValue - 50) === 0) {
                         resultMessage = `Superiro valor! You clicked at ${counterValue}. You are a genius!`;
@@ -108,18 +108,10 @@
 
 {% block myvideo %}
     {% load static %}
-    <div class="description">
-        <p>
-            Welcome to the counter challenge! Click the 'Start' button to begin counting from 0 to 100.
-            Your goal is to stop the counter precisely at 50 by clicking the 'Stop' button.
-        <hr>
-        When succeeded, you can see all the helldivers performance.
-        </p>
-    </div>
     <video autoplay loop muted controls class="video-player">
         <source src="{% static 'helldivers/Intro.mp4' %}" type="video/mp4">
     </video>
     <div class="counter" id="counter">0</div>
-    <button id="toggle-btn" class="toggle-button" onclick="handleClick()">Start</button>
-    <div class="result" id="result"></div>
+    <button id="button-container" class="button-container" onclick="handleClick()">Start</button>
+    <div class="intro-text" id="result"></div>
 {% endblock myvideo %}
