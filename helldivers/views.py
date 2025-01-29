@@ -44,19 +44,6 @@ class Statistic_view(TemplateView):
     def generate_histogram(self):
         # Extract data from Clicks table
         data = Clicks.objects.values_list('counter', flat=True)
-        #
-        # # Generate histogram
-        # plt.figure(figsize=(20, 12))
-        # plt.hist(data, bins=100, color='blue', alpha=0.7)
-        # plt.title('Clicks Distribution')
-        # plt.xlabel('Counter Value', fontsize=16)
-        # plt.ylabel('Frequency', fontsize=16)
-        # plt.xticks(ticks=range(0,100,5), rotation=45)
-        #
-        # # Save plot to an image file
-        # file_path = os.path.join('static', 'histogram.png')
-        # plt.savefig(file_path)
-        # plt.close()
 
         plt.figure(figsize=(20, 12))
         plt.hist(data, bins=100, color='blue', alpha=0.7)
@@ -76,7 +63,7 @@ class Statistic_view(TemplateView):
         ax.grid(visible=True, which='both', axis='x', linestyle='--', color='gray', alpha=0.7)
 
         # Save or show the plot
-        file_path = os.path.join('static', 'histogram.png')
+        file_path = os.path.join('media', 'histogram.png')
         plt.savefig(file_path)
         plt.close()
 
