@@ -5,9 +5,10 @@
 {% block myscripts %}
     <style>
         /* CSS to control the image size */
+
         img {
-            width: 70%; /* 70% of the window width */
-            height: auto; /* Maintain the aspect ratio */
+            max-width: 100%; /* Ensure the image never exceeds the container's width */
+            height: auto;
         }
 
         /* CSS for the rolling text effect */
@@ -39,12 +40,9 @@
 
 {% block myvideo %}
     {% load static %}
-
-    <!-- HTML for the rolling text -->
-    <div class="rolling-text">
-        <span>to be continued</span>
-    </div>
-
+        <!-- HTML for the rolling text -->
+        <div class="rolling-text">
+            <span>to be continued</span>
+        </div>
     <img src="{% static 'histogram.png' %}" alt="Histogram Image">
-
 {% endblock myvideo %}

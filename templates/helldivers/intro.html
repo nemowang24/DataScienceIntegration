@@ -1,6 +1,6 @@
 {% extends "helldivers/base.html" %}
 
-{% block title %}bootcamp{% endblock title %}
+{% block title %}Helldivers{% endblock title %}
 
 {% block myscripts %}
 
@@ -8,20 +8,19 @@
 
 {% block myvideo %}
     {% load static %}
-
-    <video autoplay loop muted controls class="video-player">
-        <source src="{% static 'helldivers/Self_Revive.mp4' %}" type="video/mp4">
-    </video>
-
-
-    <div class="intro-text">
-        <p>Helldivers have great attention and reaction. Sometime you need to call for reinforcement. If you react at
-            great time, you can even revive yourself.
-        <hr>
-        Now let's test your ability. You must click the stop when the counter display exactly 50.</p>
-    </div>
-    <div class="button-container">
-        <a href="{% url 'helldivers_practice' %}" class="btn btn-primary">Start Test</a>
-    </div>
-
+    <main>
+        <div class="game-intro">
+            <video autoplay loop muted controls class="video-player">
+                <source src="{% static 'helldivers/Self_Revive.mp4' %}" type="video/mp4">
+            </video>
+            <p class="intro-text">
+                Helldivers have great attention and reaction. Sometime you need to call for reinforcement. If you react
+                at great time, you can even revive yourself.Now let's test your ability. You must click the stop when the
+                counter display exactly 50.
+            </p>
+        </div>
+        <div class="button-container">
+            <a href="{% url 'helldivers_practice' %}" class="btn btn-primary">Start Test</a>
+        </div>
+    </main>
 {% endblock myvideo %}

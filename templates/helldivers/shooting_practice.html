@@ -1,7 +1,7 @@
 {% extends "helldivers/base.html" %}
 
 
-{% block title %}bootcamp{% endblock title %}
+{% block title %}Helldivers{% endblock title %}
 
 {% block myscripts %}
     <script>
@@ -21,7 +21,7 @@
         function handleClick() {
             const counterElement = document.getElementById('counter');
             const resultElement = document.getElementById('result');
-            const toggleButton = document.getElementById('button-container');
+            const toggleButton = document.getElementById('tgl-button');
 
             if (!isRunning) {
                 // Start the counter
@@ -108,10 +108,17 @@
 
 {% block myvideo %}
     {% load static %}
-    <video autoplay loop muted controls class="video-player">
-        <source src="{% static 'helldivers/Intro.mp4' %}" type="video/mp4">
-    </video>
-    <div class="counter" id="counter">0</div>
-    <button id="button-container" class="button-container" onclick="handleClick()">Start</button>
-    <div class="intro-text" id="result"></div>
+    <main>
+        <div class="game-intro">
+            <video autoplay loop muted controls class="video-player">
+                <source src="{% static 'helldivers/Intro.mp4' %}" type="video/mp4">
+            </video>
+            <div class="intro-text" id="result"></div>
+        </div>
+        <div class="button-container">
+            <div class="counter" id="counter">0</div>
+            <button class="btn btn-primary" id="tgl-button" onclick="handleClick()">Start</button>
+        </div>
+    </main>
+
 {% endblock myvideo %}
