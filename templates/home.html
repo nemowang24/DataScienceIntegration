@@ -11,9 +11,17 @@
         </form>
         <br/>
         <p><a class="btn btn-primary" href="{% url 'article_list' %}" role="button">View all articles</a></p>
-    {% else %}
-        <p>You are not logged in</p>
-        <a href="{% url 'login3333' %}">Login</a>
-        <a href="{% url 'signup3333' %}">Sign Up</a>
+{#    {% else %}#}
+{#        <p>You are not logged in</p>#}
+{#        <a href="{% url 'login3333' %}">Login</a>#}
+{#        <a href="{% url 'signup3333' %}">Sign Up</a>#}
     {% endif %}
+
+
+    <div display="block">
+        {% load static %}
+        <a href="{% url 'helldivers_intro' %}">
+        <img src="{% static "micall_holding.png" %}", alt="Click here to view the histogram">
+        </a>
+    </div>
 {% endblock content %}

@@ -5,5 +5,5 @@ db.sqlite3
 .env
 *.pdf
 *.mp4
-*.png
 staticfiles
+media/
