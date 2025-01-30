@@ -39,10 +39,10 @@
 {% endblock myscripts %}
 
 {% block myvideo %}
-    {% load static %}
-        <!-- HTML for the rolling text -->
-        <div class="rolling-text">
-            <span>to be continued</span>
-        </div>
-    <img src="{% static 'histogram.png' %}" alt="Histogram Image">
+    <!-- HTML for the rolling text -->
+    <div class="rolling-text">
+        <span>to be continued</span>
+    </div>
+{#    {% load static %}#}
+    <img src="{{ MEDIA_URL }}{{ file_path }}" alt="Histogram">
 {% endblock myvideo %}

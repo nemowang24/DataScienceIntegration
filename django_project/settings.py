@@ -12,14 +12,13 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 from environs import Env
+import os
 
-
-env=Env()
+env = Env()
 env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
@@ -32,7 +31,6 @@ DEBUG = env.bool("DEBUG", default=False)
 
 ALLOWED_HOSTS = ["192.168.1.240", "localhost", "127.0.0.1"]
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -44,10 +42,10 @@ INSTALLED_APPS = [
     "whitenoise.runserver_nostatic",
     "django.contrib.staticfiles",
     'rest_framework',
-    #3rd party
+    # 3rd party
     "crispy_forms",
     "crispy_bootstrap5",
-    #Local
+    # Local
     "accounts",
     "pages",
     "articles",
@@ -75,6 +73,7 @@ TEMPLATES = [
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
+                "django.template.context_processors.media",
                 "django.template.context_processors.debug",
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
@@ -85,7 +84,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "django_project.wsgi.application"
-
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
@@ -107,7 +105,6 @@ DATABASES = {
     }
 }
 
-
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 
@@ -126,7 +123,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
@@ -137,7 +133,6 @@ TIME_ZONE = "UTC"
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
@@ -174,16 +169,13 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = env.str('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = env.str('EMAIL_HOST_PASSWORD')
 
-
-
 TIME_ZONE = "America/New_York"
 CSRF_TRUSTED_ORIGINS = ["https://*.tropicw.net", "https://127.0.0.1"]
 CSRF_COOKIE_NAME = "csrftoken"  # Default name for the CSRF cookie
 CSRF_HEADER_NAME = "HTTP_X_CSRFTOKEN"  # Header used for the token
 
-
 MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "media"
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_COOKIE_NAME = 'sessionid'
@@ -228,7 +220,7 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.JSONRenderer',
     ),
 }
-
+#
 # LOGGING = {
 #     'version': 1,
 #     'disable_existing_loggers': False,

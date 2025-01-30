@@ -18,10 +18,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
+from django.conf.urls.static import static
 
-#import helldivers
-
-# from django.conf.urls.static import static
 # from django.views.generic.base import TemplateView
 
 urlpatterns = [
@@ -30,7 +28,6 @@ urlpatterns = [
     path("accounts/", include("django.contrib.auth.urls")),
     path('api-auth/', include('rest_framework.urls')),
 
-
     path("articles/", include("articles.urls")),
     path("api/", include("api.urls")),
     path("helldivers/", include("helldivers.urls")),
@@ -38,8 +35,11 @@ urlpatterns = [
     path("", include("pages.urls")),
 ]
 
-# if settings.DEBUG:  # Allows debug_toolbar only in DEBUG mode
-#     import debug_toolbar
-#
-#     urlpatterns += [path('__debug__/', include(debug_toolbar.urls))]
-#     # urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+if settings.DEBUG:  # Allows debug_toolbar only in DEBUG mode
+    import debug_toolbar
+
+    urlpatterns += [path('__debug__/', include(debug_toolbar.urls))]
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+

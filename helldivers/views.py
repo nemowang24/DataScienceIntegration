@@ -16,6 +16,8 @@ from api.models import Clicks
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MultipleLocator
 
+from django_project.settings import MEDIA_URL, MEDIA_ROOT
+
 logger = logging.getLogger(__name__)
 
 
@@ -63,11 +65,12 @@ class Statistic_view(TemplateView):
         ax.grid(visible=True, which='both', axis='x', linestyle='--', color='gray', alpha=0.7)
 
         # Save or show the plot
-        file_path = os.path.join('media', 'histogram.png')
+        file_path = os.path.join(MEDIA_ROOT, 'histogram.png')
         plt.savefig(file_path)
         plt.close()
 
-        return file_path
+        # return file_path
+        return 'histogram.png'
 
     # def get(self, request, *args, **kwargs):
     #     # First, generate the histogram

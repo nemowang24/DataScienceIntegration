@@ -1,8 +1,8 @@
 from django.urls import path, include
 from .views import Intro_view, Practice_view, Statistic_view
-from django.conf import settings
-from rest_framework import routers
 
+
+from rest_framework import routers
 
 # router = routers.DefaultRouter()
 # router.register(r'counter/', TaskViewSet2, basename="task")
@@ -15,8 +15,9 @@ urlpatterns = [
 
     path("statistic/", Statistic_view.as_view(), name="counter_statistic"),
     # path("", include(router.urls)),
-
 ]
+
+
 
 # if settings.DEBUG:  # Allows debug_toolbar only in DEBUG mode
 #     import debug_toolbar
