@@ -5,10 +5,10 @@
 {% block content %}
     {% if user.is_authenticated %}
         Hi {{ user.username }}! You are {{ user.age }} years old.
-        <form action="{% url 'logout' %}" method="post">
-            {% csrf_token %}
-            <input type="submit" value="Logout">
-        </form>
+{#        <form action="{% url 'logout' %}" method="post">#}
+{#            {% csrf_token %}#}
+{#            <input type="submit" value="Logout">#}
+{#        </form>#}
         <br/>
         <p><a class="btn btn-primary" href="{% url 'article_list' %}" role="button">View all articles</a></p>
 {#    {% else %}#}

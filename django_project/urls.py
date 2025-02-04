@@ -19,13 +19,14 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from django.views.generic.base import TemplateView
 
 # from django.views.generic.base import TemplateView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("accounts/", include("accounts.urls")),
-    path("accounts/", include("django.contrib.auth.urls")),
+    # path("accounts/", include("accounts.urls")),
+    # path("accounts/", include("django.contrib.auth.urls")),
     path('api-auth/', include('rest_framework.urls')),
 
     path("articles/", include("articles.urls")),
@@ -33,13 +34,15 @@ urlpatterns = [
     path("helldivers/", include("helldivers.urls")),
 
     path("", include("pages.urls")),
-]
 
+    path('accounts/', include('allauth.urls')),
+    path("accounts/profile/", TemplateView.as_view(template_name="profile.html")),
+    path("i18n/", include("django.conf.urls.i18n")),
+
+]
 
 if settings.DEBUG:  # Allows debug_toolbar only in DEBUG mode
     import debug_toolbar
 
     urlpatterns += [path('__debug__/', include(debug_toolbar.urls))]
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
-
