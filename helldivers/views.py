@@ -217,3 +217,6 @@ class Statistic_view(TemplateView):
 #             {"message": "Task created successfully!", "data": task_data},
 #             status=status.HTTP_201_CREATED
 #         )
+
+class WaterML_View(TemplateView):
+    template_name = "helldivers/publish_coldhot.html"
