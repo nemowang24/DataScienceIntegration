@@ -3,127 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Audio Recorder</title>
+    <title>Real-Time Audio Visualization</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding: 20px;
-            margin: 0;
-            background-color: #f9f9f9;
-        }
-
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-        }
-
-        button {
-            display: inline-block;
-            width: 100%;
-            max-width: 300px;
-            margin: 10px auto;
-            padding: 15px;
-            font-size: 18px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        button:disabled {
-            background-color: #cccccc;
-            cursor: not-allowed;
-        }
-
-        button:hover:enabled {
-            background-color: #0056b3;
-        }
-
-        audio {
+        canvas {
             display: block;
             margin: 20px auto;
-            width: 100%;
-            max-width: 600px; /* Wider audio control track for desktop */
-        }
-
-        @media (min-width: 768px) {
-            body {
-                padding: 40px;
-            }
-
-            h1 {
-                font-size: 3rem;
-            }
-
-            button {
-                font-size: 20px;
-            }
+            border: 1px solid #ccc;
         }
     </style>
 </head>
 <body>
-<h1>Audio Recorder</h1>
-<button id="startBtn">Start Recording</button>
-<button id="stopBtn" disabled>Stop Recording</button>
-<audio id="audioPlayback" controls></audio>
+<h1>Real-Time Audio Data</h1>
+<button id="startRecording">Start</button>
+<button id="stopRecording" disabled>Stop</button>
+<canvas id="audioVisualizer" width="800" height="200"></canvas>
 
 <script>
-    // Validate browser support for audio recording
-    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        alert('Your browser does not support audio recording.');
-    }
+    const startButton = document.getElementById('startRecording');
+    const stopButton = document.getElementById('stopRecording');
+    const canvas = document.getElementById('audioVisualizer');
+    const canvasCtx = canvas.getContext('2d');
 
-    const startBtn = document.getElementById('startBtn');
-    const stopBtn = document.getElementById('stopBtn');
-    const audioPlayback = document.getElementById('audioPlayback');
+    let audioContext, analyser, microphone, dataArray, animationFrame;
 
-    let mediaRecorder; // To manage audio recording
-    let audioChunks = []; // To store recorded audio data
-
-    // Function to initialize and start recording
-    async function startRecording() {
+    startButton.onclick = async () => {
         try {
-            const stream = await navigator.mediaDevices.getUserMedia({audio: true});
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
-            mediaRecorder = new MediaRecorder(stream);
+            // Create an AudioContext
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
-            // Collect audio data as chunks
-            mediaRecorder.ondataavailable = event => {
-                audioChunks.push(event.data);
-            };
+            // Create an analyser node
+            analyser = audioContext.createAnalyser();
+            analyser.fftSize = 2048; // Number of data points used for the FFT
+            const bufferLength = analyser.frequencyBinCount;
+            dataArray = new Uint8Array(bufferLength);
 
-            // Process audio data when recording stops
-            mediaRecorder.onstop = () => {
-                const audioBlob = new Blob(audioChunks, {type: 'audio/webm'});
-                const audioUrl = URL.createObjectURL(audioBlob);
-                audioPlayback.src = audioUrl;
+            // Connect the microphone to the analyser
+            microphone = audioContext.createMediaStreamSource(stream);
+            microphone.connect(analyser);
 
-                // Reset chunks for future recordings
-                audioChunks = [];
-            };
+            // Start visualizing
+            startButton.disabled = true;
+            stopButton.disabled = false;
 
-            // Start the recording
-            mediaRecorder.start();
+            visualize();
         } catch (error) {
-            alert('Microphone access is required! Please enable it in your browser settings.');
-            console.error('Error accessing microphone:', error);
+            console.error('Error accessing audio stream:', error);
+            alert('Could not access your microphone.');
         }
+    };
+
+    stopButton.onclick = () => {
+        audioContext.close();  // Close the audio context
+        cancelAnimationFrame(animationFrame); // Stop visualization loop
+
+        startButton.disabled = false;
+        stopButton.disabled = true;
+
+        // Reset canvas
+        canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
+    };
+
+    function visualize() {
+        animationFrame = requestAnimationFrame(visualize);
+
+        analyser.getByteTimeDomainData(dataArray);
+
+        // Draw the waveform
+        canvasCtx.fillStyle = '#f4f4f4';
+        canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
+        canvasCtx.lineWidth = 2;
+        canvasCtx.strokeStyle = '#007bff';
+        canvasCtx.beginPath();
+
+        const sliceWidth = canvas.width / dataArray.length;
+        let x = 0;
+
+        for (let i = 0; i < dataArray.length; i++) {
+            const v = dataArray[i] / 128.0;
+            const y = (v * canvas.height) / 2;
+
+            if (i === 0) {
+                canvasCtx.moveTo(x, y);
+            } else {
+                canvasCtx.lineTo(x, y);
+            }
+
+            x += sliceWidth;
+        }
+
+        canvasCtx.lineTo(canvas.width, canvas.height / 2);
+        canvasCtx.stroke();
     }
-
-    // Link "click" actions to functions (for desktop users)
-    startBtn.addEventListener('click', () => {
-        startRecording();
-        startBtn.disabled = true;
-        stopBtn.disabled = false;
-    });
-
-    stopBtn.addEventListener('click', () => {
-        mediaRecorder.stop();
-        startBtn.disabled = false;
-        stopBtn.disabled = true;
-    });
 </script>
 </body>
 </html>
