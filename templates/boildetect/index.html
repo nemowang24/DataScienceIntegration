@@ -21,8 +21,14 @@
 
         // Set up Web Audio Context
         const audioContext = new (window.AudioContext || window.webkitAudioContext)(
-            { noiseSuppression: false }
-        );
+                {
+                    audio:
+                        {
+                            noiseSuppression: false
+                        }
+                }
+            )
+        ;
         const sampleRate = audioContext.sampleRate; // Get sample rate
         const source = audioContext.createMediaStreamSource(stream);
 
@@ -40,7 +46,7 @@
             callback: (features) => {
                 // Normalize spectralCentroid to Hz
                 const spectralCentroidInHz = features.spectralCentroid
-                    ? features.spectralCentroid/512*sampleRate // Convert to Hz
+                    ? features.spectralCentroid / 512 * sampleRate // Convert to Hz
                     : null;
 
                 // Smooth the spectralCentroidInHz with a rolling average
