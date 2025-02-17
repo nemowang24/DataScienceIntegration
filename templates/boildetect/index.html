@@ -1,101 +1,83 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Real-Time Audio Visualization</title>
-    <style>
-        canvas {
-            display: block;
-            margin: 20px auto;
-            border: 1px solid #ccc;
-        }
-    </style>
+    <title>Real-time MFCC Calculation</title>
+    <script src="https://cdn.jsdelivr.net/npm/meyda/dist/web/meyda.min.js"></script>
 </head>
 <body>
-<h1>Real-Time Audio Data</h1>
-<button id="startRecording">Start</button>
-<button id="stopRecording" disabled>Stop</button>
-<canvas id="audioVisualizer" width="800" height="200"></canvas>
+<h1>Real-Time MFCC Calculation</h1>
+
+<!-- Element to display MFCC output -->
+<p><strong>MFCC Output:</strong></p>
+<div id="mfcc-output"></div>
+
+<!-- Button to start microphone input -->
+<button id="start-button">Start MFCC Calculation</button>
 
 <script>
-    const startButton = document.getElementById('startRecording');
-    const stopButton = document.getElementById('stopRecording');
-    const canvas = document.getElementById('audioVisualizer');
-    const canvasCtx = canvas.getContext('2d');
+    document.getElementById('start-button').addEventListener('click', async function () {
+        // Request audio from the user's microphone
+        const stream = await navigator.mediaDevices.getUserMedia({audio: true});
 
-    let audioContext, analyser, microphone, dataArray, animationFrame;
-
-    startButton.onclick = async () => {
-        try {
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-
-            // Create an AudioContext
-            audioContext = new (window.AudioContext || window.webkitAudioContext)();
-
-            // Create an analyser node
-            analyser = audioContext.createAnalyser();
-            analyser.fftSize = 2048; // Number of data points used for the FFT
-            const bufferLength = analyser.frequencyBinCount;
-            dataArray = new Uint8Array(bufferLength);
-
-            // Connect the microphone to the analyser
-            microphone = audioContext.createMediaStreamSource(stream);
-            microphone.connect(analyser);
-
-            // Start visualizing
-            startButton.disabled = true;
-            stopButton.disabled = false;
-
-            visualize();
-        } catch (error) {
-            console.error('Error accessing audio stream:', error);
-            alert('Could not access your microphone.');
-        }
-    };
-
-    stopButton.onclick = () => {
-        audioContext.close();  // Close the audio context
-        cancelAnimationFrame(animationFrame); // Stop visualization loop
-
-        startButton.disabled = false;
-        stopButton.disabled = true;
-
-        // Reset canvas
-        canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
-    };
-
-    function visualize() {
-        animationFrame = requestAnimationFrame(visualize);
-
-        analyser.getByteTimeDomainData(dataArray);
-
-        // Draw the waveform
-        canvasCtx.fillStyle = '#f4f4f4';
-        canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
-        canvasCtx.lineWidth = 2;
-        canvasCtx.strokeStyle = '#007bff';
-        canvasCtx.beginPath();
-
-        const sliceWidth = canvas.width / dataArray.length;
-        let x = 0;
-
-        for (let i = 0; i < dataArray.length; i++) {
-            const v = dataArray[i] / 128.0;
-            const y = (v * canvas.height) / 2;
-
-            if (i === 0) {
-                canvasCtx.moveTo(x, y);
-            } else {
-                canvasCtx.lineTo(x, y);
+        // Set up Web Audio Context
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)({
+                sampleRate: 48000 // Set the sample rate to 48 kHz
             }
+        );
+        const sampleRate = audioContext.sampleRate; // Get sample rate
+        const source = audioContext.createMediaStreamSource(stream);
 
-            x += sliceWidth;
-        }
+        // Buffer to store the last 50 spectralCentroidInHz values
+        const spectralCentroidBuffer = [];
+        const bufferSize_sc = 200; // Size of the smoothing window
 
-        canvasCtx.lineTo(canvas.width, canvas.height / 2);
-        canvasCtx.stroke();
-    }
+
+        // Create Meyda analyzer
+        const analyzer = Meyda.createMeydaAnalyzer({
+            audioContext: audioContext,
+            source: source,
+            bufferSize: 512, // Buffer size for real-time analysis
+            featureExtractors: ['spectralCentroid'], // Includes spectralCentroid
+            callback: (features) => {
+                // Normalize spectralCentroid to Hz
+                const spectralCentroidInHz = features.spectralCentroid
+                    ? features.spectralCentroid * (100) // Convert to Hz
+                    : null;
+
+                // Smooth the spectralCentroidInHz with a rolling average
+                if (spectralCentroidInHz !== null) {
+                    // Add current value to the buffer
+                    spectralCentroidBuffer.push(spectralCentroidInHz);
+
+                    // If buffer exceeds the window size, remove the oldest value
+                    if (spectralCentroidBuffer.length > bufferSize_sc) {
+                        spectralCentroidBuffer.shift();
+                    }
+                }
+
+                // Calculate smoothed spectral centroid (average of buffer values)
+                const smoothedSpectralCentroidInHz =
+                    spectralCentroidBuffer.length > 0
+                        ? spectralCentroidBuffer.reduce((a, b) => a + b, 0) / spectralCentroidBuffer.length
+                        : null;
+
+                // Display MFCC
+                const mfccOutput = features.mfcc ? `MFCC: ${features.mfcc.join(', ')}` : 'MFCC: -';
+
+                // Display Smoothed Spectral Centroid in Hz
+                const spectralCentroidOutput = smoothedSpectralCentroidInHz
+                    ? `Spectral Centroid (Smoothed): ${smoothedSpectralCentroidInHz.toFixed(2)} Hz`
+                    : 'Spectral Centroid: -';
+
+
+                document.getElementById('mfcc-output').innerText = `${mfccOutput}\n${sampleRate}\n${spectralCentroidOutput}`;
+
+            },
+        });
+
+        // Start the analyzer
+        analyzer.start();
+    });
 </script>
 </body>
 </html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Real-time MFCC Calculation</title>
+  <script src="https://cdn.jsdelivr.net/npm/meyda/dist/web/meyda.min.js"></script>
+</head>
+<body>
+  <h1>Real-Time MFCC Calculation</h1>
+
+  <!-- Element to display MFCC output -->
+  <p><strong>MFCC Output:</strong></p>
+  <div id="mfcc-output"></div>
+
+  <!-- Button to start microphone input -->
+  <button id="start-button">Start MFCC Calculation</button>
+
+  <script>
+    document.getElementById('start-button').addEventListener('click', async function () {
+      // Request audio from the user's microphone
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+      // Set up Web Audio Context
+      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      const source = audioContext.createMediaStreamSource(stream);
+
+      // Create Meyda analyzer
+      const analyzer = Meyda.createMeydaAnalyzer({
+        audioContext: audioContext,
+        source: source,
+        bufferSize: 512, // Buffer size for real-time analysis
+        featureExtractors: ['mfcc'],
+        callback: (features) => {
+          // Display the computed MFCCs in the browser
+          document.getElementById('mfcc-output').innerText = `MFCC: ${features.mfcc.join(', ')}`;
+        },
+      });
+
+      // Start the analyzer
+      analyzer.start();
+    });
+  </script>
+</body>
+</html>
