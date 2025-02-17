@@ -20,10 +20,7 @@
         const stream = await navigator.mediaDevices.getUserMedia({audio: true});
 
         // Set up Web Audio Context
-        const audioContext = new (window.AudioContext || window.webkitAudioContext)({
-                sampleRate: 48000 // Set the sample rate to 48 kHz
-            }
-        );
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
         const sampleRate = audioContext.sampleRate; // Get sample rate
         const source = audioContext.createMediaStreamSource(stream);
 
@@ -37,11 +34,11 @@
             audioContext: audioContext,
             source: source,
             bufferSize: 512, // Buffer size for real-time analysis
-            featureExtractors: ['spectralCentroid'], // Includes spectralCentroid
+            featureExtractors: ['spectralCentroid', 'rms'], // Includes spectralCentroid
             callback: (features) => {
                 // Normalize spectralCentroid to Hz
                 const spectralCentroidInHz = features.spectralCentroid
-                    ? features.spectralCentroid * (100) // Convert to Hz
+                    ? features.spectralCentroid/512*sampleRate // Convert to Hz
                     : null;
 
                 // Smooth the spectralCentroidInHz with a rolling average
@@ -64,13 +61,15 @@
                 // Display MFCC
                 const mfccOutput = features.mfcc ? `MFCC: ${features.mfcc.join(', ')}` : 'MFCC: -';
 
+                const rms = features.rms ? `RMS: ${features.rms.toFixed(8)}` : 'RMS: -';
+
                 // Display Smoothed Spectral Centroid in Hz
                 const spectralCentroidOutput = smoothedSpectralCentroidInHz
                     ? `Spectral Centroid (Smoothed): ${smoothedSpectralCentroidInHz.toFixed(2)} Hz`
                     : 'Spectral Centroid: -';
 
 
-                document.getElementById('mfcc-output').innerText = `${mfccOutput}\n${sampleRate}\n${spectralCentroidOutput}`;
+                document.getElementById('mfcc-output').innerText = `${mfccOutput}\n${sampleRate}\n${spectralCentroidOutput}\n${rms}\n`;
 
             },
         });
