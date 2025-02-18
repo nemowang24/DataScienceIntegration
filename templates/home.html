@@ -3,6 +3,11 @@
 {% block title %}Home Page{% endblock title %}
 
 {% block content %}
+    <iframe style="border-radius:12px"
+            src="https://open.spotify.com/embed/track/4tGt4KYAelRBYuCJycth5N?utm_source=generator" width="100%"
+            height="152" frameBorder="0" allowfullscreen=""
+            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+
     {% if user.is_authenticated %}
         Hi {{ user.username }}! You are {{ user.age }} years old.
         {#        <form action="{% url 'logout' %}" method="post">#}
@@ -27,10 +32,17 @@
 
     <hr>
 
-    <div class="block2">
+    <div class="block">
         {% load static %}
         <a href='{% url "helldivers_check_water" %}'>
             <img src="{% static "helldivers/tapwater.webp" %}" alt="Findout how cold or hot is different">
+        </a>
+    </div>
+    <hr>
+    <div class="block">
+        {% load static %}
+        <a href='{% url "boil_detect" %}'>
+            <img src="{% static "boildetect/elec_kettle.webp" %}" alt="Remind you when water boils enough long">
         </a>
     </div>
 {% endblock content %}

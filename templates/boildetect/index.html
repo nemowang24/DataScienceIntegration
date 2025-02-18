@@ -5,6 +5,8 @@
     <script src="https://cdn.jsdelivr.net/npm/meyda/dist/web/meyda.min.js"></script>
 </head>
 <body>
+<h1>Under construction! </h1>
+<hr>
 <h1>Real-Time MFCC Calculation</h1>
 
 <!-- Element to display MFCC output -->
@@ -35,7 +37,7 @@
         // Buffer to store the last 50 spectralCentroidInHz values
         const spectralCentroidBuffer = [];
         const bufferSize_sc = 200; // Size of the smoothing window
-
+        let  counter = 0;
 
         // Create Meyda analyzer
         const analyzer = Meyda.createMeydaAnalyzer({
@@ -46,7 +48,7 @@
             callback: (features) => {
                 // Normalize spectralCentroid to Hz
                 const spectralCentroidInHz = features.spectralCentroid
-                    ? features.spectralCentroid / 512 * sampleRate // Convert to Hz
+                    ? features.spectralCentroid / (512/2) * (sampleRate/2) // Convert to Hz
                     : null;
 
                 // Smooth the spectralCentroidInHz with a rolling average
@@ -71,10 +73,19 @@
 
                 const rms = features.rms ? `RMS: ${features.rms.toFixed(8)}` : 'RMS: -';
 
+
                 // Display Smoothed Spectral Centroid in Hz
                 const spectralCentroidOutput = smoothedSpectralCentroidInHz
                     ? `Spectral Centroid (Smoothed): ${smoothedSpectralCentroidInHz.toFixed(2)} Hz`
                     : 'Spectral Centroid: -';
+
+                counter++;
+                if (counter === 2) {
+
+                    console.log(`${spectralCentroidOutput}, ${rms}`);
+                    counter = 0; // Reset counter if needed
+                }
+
 
 
                 document.getElementById('mfcc-output').innerText = `${mfccOutput}\n${sampleRate}\n${spectralCentroidOutput}\n${rms}\n`;

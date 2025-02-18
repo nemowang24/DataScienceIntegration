@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<!-- saved from url=(0021)https://meyda.js.org/ -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>Meyda</title>
+  <link rel="stylesheet" href="./Meyda_files/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, maximum-scale=1, user-scalable=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge"><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>What is Meyda? | Meyda: Javascript Audio Feature Extraction</title>
+<meta name="generator" content="Jekyll v3.9.5">
+<meta property="og:title" content="What is Meyda?">
+<meta property="og:locale" content="en_US">
+<meta name="description" content="Meyda is a Javascript audio feature extraction library. Meyda supports both offline feature extraction as well as real-time feature extraction using the Web Audio API.">
+<meta property="og:description" content="Meyda is a Javascript audio feature extraction library. Meyda supports both offline feature extraction as well as real-time feature extraction using the Web Audio API.">
+<link rel="canonical" href="https://meyda.js.org/">
+<meta property="og:url" content="/">
+<meta property="og:site_name" content="Meyda: Javascript Audio Feature Extraction">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary">
+<meta property="twitter:title" content="What is Meyda?">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebSite","description":"Meyda is a Javascript audio feature extraction library. Meyda supports both offline feature extraction as well as real-time feature extraction using the Web Audio API.","headline":"What is Meyda?","name":"Meyda: Javascript Audio Feature Extraction","url":"/"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="./Meyda_files/main.css"><link type="application/atom+xml" rel="alternate" href="https://meyda.js.org/feed.xml" title="Meyda: Javascript Audio Feature Extraction"></head>
+<body data-new-gr-c-s-check-loaded="14.1223.0" data-gr-ext-installed="">
+    <div class="container"><div class="row">
+  <div class="col">
+    <a href="https://meyda.js.org/" id="title-link"><h1 class="display-1">Meyda</h1></a>
+    <p class="lead">Audio feature extraction for JavaScript.</p>
+    <hr>
+  </div><nav>
+  <a href="https://meyda.js.org/getting-started">Getting Started</a> |
+  <a href="https://meyda.js.org/reference">Reference</a> |
+  <a href="https://meyda.js.org/audio-features">Audio Features</a> |
+  <a href="https://meyda.js.org/showcase">Showcase</a> |
+  <a href="https://meyda.js.org/guides/contributing">Contributing</a> |
+  <a href="https://github.com/hughrawlinson/meyda/issues">Issue Tracker</a>
+</nav>
+</div>
+<div class="row">
+  <div id="showcase" class="col">
+    <div id="audioControl" style="display: none;">
+      <p>Allow microphone access or play this audio file to see a demo.</p>
+      <audio id="elvisSong" controls="" src="/assets/ripitup.mp3"></audio>
+    </div>
+    <canvas width="1665" height="1040" style="width: 100%; height: auto;"></canvas>
+    <div id="legend">
+      <div class="key-item">
+        <div class="key-color pink"></div><div class="key-text">Root Mean Squared (RMS)</div>
+      </div>
+      <div class="key-item">
+        <div class="key-color yellow"></div><div class="key-text">Spectral Centroid</div>
+      </div>
+      <div class="key-item">
+        <div class="key-color blue"></div><div class="key-text">Spectral Rolloff</div>
+      </div>
+    </div>
+    <div id="chroma">
+          <div class="chroma-band" style="background-color: rgba(0,209,0,1)">C</div>
+          <div class="chroma-band" style="background-color: rgba(0,221,0,1)">C#</div>
+          <div class="chroma-band" style="background-color: rgba(0,187,0,1)">D</div>
+          <div class="chroma-band" style="background-color: rgba(0,176,0,1)">Eb</div>
+          <div class="chroma-band" style="background-color: rgba(0,159,0,1)">E</div>
+          <div class="chroma-band" style="background-color: rgba(0,201,0,1)">F</div>
+          <div class="chroma-band" style="background-color: rgba(0,235,0,1)">F#</div>
+          <div class="chroma-band" style="background-color: rgba(0,220,0,1)">G</div>
+          <div class="chroma-band" style="background-color: rgba(0,180,0,1)">G#</div>
+          <div class="chroma-band" style="background-color: rgba(0,233,0,1)">A</div>
+          <div class="chroma-band" style="background-color: rgba(0,255,0,1)">Bb</div>
+          <div class="chroma-band" style="background-color: rgba(0,188,0,1)">B</div></div>
+    <div id="mfcc">
+          <div class="mfcc-band" style="background-color: rgba(0,125,0,1)">0</div>
+          <div class="mfcc-band" style="background-color: rgba(0,125,0,1)">1</div>
+          <div class="mfcc-band" style="background-color: rgba(0,125,0,1)">2</div>
+          <div class="mfcc-band" style="background-color: rgba(0,125,0,1)">3</div>
+          <div class="mfcc-band" style="background-color: rgba(0,125,0,1)">4</div>
+          <div class="mfcc-band" style="background-color: rgba(0,125,0,1)">5</div>
+          <div class="mfcc-band" style="background-color: rgba(0,125,0,1)">6</div>
+          <div class="mfcc-band" style="background-color: rgba(0,125,0,1)">7</div>
+          <div class="mfcc-band" style="background-color: rgba(0,125,0,1)">8</div>
+          <div class="mfcc-band" style="background-color: rgba(0,125,0,1)">9</div>
+          <div class="mfcc-band" style="background-color: rgba(0,125,0,1)">10</div>
+          <div class="mfcc-band" style="background-color: rgba(0,125,0,1)">11</div>
+          <div class="mfcc-band" style="background-color: rgba(0,125,0,1)">12</div></div>
+  </div>
+  <hr>
+</div>
+<script src="./Meyda_files/main.js.download"></script>
+<div class="row">
+  <div class="col">
+    <h2 id="what-is-meyda">What is Meyda?</h2>
+
+<p>Meyda is a JavaScript audio feature extraction library. It works with the Web
+Audio API (or plain old JavaScript arrays) to expose information about the
+timbre and perceived qualities of sound. Meyda supports both offline feature
+extraction as well as real-time feature extraction using the
+<a href="https://github.com/WebAudio/web-audio-api">Web Audio API</a>. We wrote a paper about it, which is available
+<a href="https://wac.ircam.fr/pdf/wac15_submission_17.pdf">here</a>.</p>
+
+<p>Would you like your Meyda project to be featured in our <a href="https://meyda.js.org/showcase">user showcase</a>? <a href="https://github.com/meyda/meyda/issues/new?assignees=&amp;labels=Showcase+Request&amp;template=showcase-application.md&amp;title=">Please let us know!</a></p>
+
+<p>Want to ask questions, or chat about Meyda? Check out our <a href="https://web-audio.slack.com/messages/C51A03LBS/">slack channel</a> on the Web Audio Slack Team. You’ll need to <a href="https://web-audio-slackin.herokuapp.com/">sign up here</a> before you can join.</p>
+
+<hr>
+
+
+  </div>
+</div><div class="row text-center">
+  <div class="col-6 col-sm-3">
+    <dl>
+      <dt>Hugh Rawlinson</dt>
+      <dd><a href="http://twitter.com/hughrawlinson">@hughrawlinson</a></dd>
+    </dl>
+  </div>
+  <div class="col-6 col-sm-3">
+    <dl>
+      <dt>Nevo Segal</dt>
+      <dd><a href="http://twitter.com/nevosegal">@nevosegal</a></dd>
+    </dl>
+  </div>
+  <div class="col-6 col-sm-3">
+    <dl>
+      <dt>Jakub Fiala</dt>
+      <dd><a href="http://twitter.com/fiala__">@fiala__</a></dd>
+    </dl>
+  </div>
+  <div class="col-6 col-sm-3">
+    <dl>
+      <dt>Sam Wray</dt>
+      <dd><a href="https://twitter.com/_2xAA">@_2xAA</a></dd>
+    </dl>
+  </div>
+</div>
+<div class="row">
+  <div class="col">
+    <footer class="blog-footer">
+      <hr>
+      <p>Showcase site built by the Meyda core team. You can <a href="https://github.com/hughrawlinson/meyda/wiki/contributing">contribute</a> too you know!</p>
+      <p><a href="https://meyda.js.org/#">Back to top</a></p>
+    </footer>
+  </div>
+</div>
+</div>
+    <a href="https://github.com/hughrawlinson/meyda"><img style="position: absolute; top: 0; right: 0; border: 0;" src="./Meyda_files/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png"></a>
+  
+
+</body><grammarly-desktop-integration data-grammarly-shadow-root="true"><template shadowrootmode="open"><style>
+      div.grammarly-desktop-integration {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select:none;
+        user-select:none;
+      }
+
+      div.grammarly-desktop-integration:before {
+        content: attr(data-content);
+      }
+    </style><div aria-label="grammarly-integration" role="group" tabindex="-1" class="grammarly-desktop-integration" data-content="{&quot;mode&quot;:&quot;full&quot;,&quot;isActive&quot;:true,&quot;isUserDisabled&quot;:false}"></div></template></grammarly-desktop-integration></html>
