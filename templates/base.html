@@ -18,6 +18,40 @@
             width: 100%; /* Makes it responsive */
             height: auto; /* Keeps the aspect ratio */
         }
+
+        .horizontal-container {
+            display: flex;
+            flex-direction: row; /* Set horizontal layout for larger screens */
+            justify-content: center; /* Adjust alignment if needed */
+            align-items: center;
+            gap: 10px; /* Add spacing between items */
+            height: 50%;
+            width: 100%;
+        }
+
+        div.horizontal-container img {
+            max-width: 300px; /* Adjust as needed */
+            width: 100%; /* Makes it responsive */
+            height: auto; /* Keeps the aspect ratio */
+            justify-content: left;
+        }
+
+        .horizontal-container a {
+            text-align: center; /* Optional: Center text under images */
+        }
+
+        @media (max-width: 768px) {
+            /* For screens smaller than 768px (e.g., phones) */
+            .horizontal-container {
+                flex-direction: column; /* Switch to vertical layout */
+                align-items: center; /* Center items in the container */
+                justify-content: center;
+            }
+
+            .horizontal-container a {
+                margin-bottom: 10px; /* Optional: Add spacing between links */
+            }
+        }
     </style>
 
 </head>
@@ -63,6 +97,9 @@
                                         {% url 'socialaccount_connections' as socialaccount_url_ %}
                                         {% if email_url_ or socialaccount_url_ %}
                                             <a href="
+
+
+
 
 
                                                     {% if email_url_ %}{{ email_url_ }}{% else %}{{ socialaccount_url_ }}{% endif %}"
