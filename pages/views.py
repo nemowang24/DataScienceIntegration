@@ -57,12 +57,32 @@ class PresignedUrlView(View):
     A class-based view to generate presigned URLs for private S3 files.
     """
 
+    def get_client_ip(self, request):
+        """Retrieve the client's IP address"""
+        x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
+        if x_forwarded_for:
+            ip = x_forwarded_for.split(",")[0]
+        else:
+            ip = request.META.get("REMOTE_ADDR")
+        return ip
+
     def get(self, request, file_name):
         """
         Handles GET requests to generate a presigned URL for a given file.
         :param request: Django's request object.
         :param file_name: The name of the file in the private S3 bucket.
         """
+
+        if request.method == "GET":  # Log only GET requests
+            ip = self.get_client_ip(request)
+            user = request.user if request.user.is_authenticated else "Unknown"
+            AccessStatistic.objects.create(
+                user=user,
+                ip_address=ip,
+                url_visited=request.build_absolute_uri(),
+                access_time=now(),
+            )
+
         s3_client = boto3.client(
             "s3",
             aws_access_key_id=settings.AWS_ACCESS_KEY_ID,

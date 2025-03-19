@@ -57,11 +57,11 @@
     <hr>
     <div class="horizontal-container">
         {% load static %}
-        <a href="https://public-datascience.s3.us-east-1.amazonaws.com/churnanalysishomework.pdf">
+        <a href='{% url 'churnanalysis1' %}'>
             <img src="{% static 'pages/churnanalysishomework.gif' %}" alt="Churn Analysis Homework">
         </a>
-        <a href="https://public-datascience.s3.us-east-1.amazonaws.com/churnanalysishomework.pdf">
-            <p>Telecom Churn Analysis      </p>
+        <a href='{% url 'churnanalysis1' %}'>
+            <p>Telecom Churn Analysis</p>
         </a>
     </div>
 {% endblock content %}
