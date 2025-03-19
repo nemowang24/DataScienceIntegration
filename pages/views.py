@@ -3,6 +3,8 @@ import boto3
 from django.http import JsonResponse
 from django.conf import settings
 from django.views import View
+from django.utils.timezone import now
+from .models import AccessStatistic  # Import the model to log statistics
 
 
 # Create your views here.
@@ -24,6 +26,30 @@ class HomePageView(TemplateView):
         # Pass the session ID to the context
         context['session_id'] = session_id
         return context
+
+    def get(self, request, *args, **kwargs):
+        # Log access statistics
+        if request.method == "GET":  # Log only GET requests
+            ip = self.get_client_ip(request)
+            user = request.user if request.user.is_authenticated else "Unknown"
+            AccessStatistic.objects.create(
+                user=user,
+                ip_address=ip,
+                url_visited=request.build_absolute_uri(),
+                access_time=now(),
+            )
+        return super().get(request, *args, **kwargs)
+
+
+    def get_client_ip(self, request):
+        """Retrieve the client's IP address"""
+        x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
+        if x_forwarded_for:
+            ip = x_forwarded_for.split(",")[0]
+        else:
+            ip = request.META.get("REMOTE_ADDR")
+        return ip
+
 
 
 class PresignedUrlView(View):
