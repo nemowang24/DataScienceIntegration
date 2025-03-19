@@ -70,13 +70,13 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     # Add the account middleware:
     "allauth.account.middleware.AccountMiddleware",
+    'pages.middleware.AccessLogMiddleware',  # Adjust the path as needed
 ]
 
 CORS_ALLOWED_ORIGINS = [
     'https://www.tropicw.net',
     'https://api.yourdomain.com',
 ]
-
 
 ROOT_URLCONF = "django_project.urls"
 
@@ -259,7 +259,6 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
-
 # LOGGING = {
 #     'version': 1,
 #     'disable_existing_loggers': False,
@@ -283,4 +282,3 @@ AWS_REGION = env.str("AWS_REGION")
 AWS_S3_BUCKET_NAME = env.str("AWS_S3_BUCKET_NAME")
 AWS_S3_FILE_OVERWRITE = env.str("AWS_S3_FILE_OVERWRITE")
 AWS_DEFAULT_ACL = env.str("AWS_DEFAULT_ACL")
-
