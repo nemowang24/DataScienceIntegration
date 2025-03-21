@@ -2,6 +2,10 @@ import logging
 from django.utils.timezone import now
 from user_agents import parse  # Install this with 'pip install pyyaml user-agents'
 from pages.models import AccessStatistic  # Import the AccessStatistic model (adjust the path if needed)
+from django.conf import settings
+import requests
+import json
+
 
 logger = logging.getLogger(__name__)  # For debugging purposes
 
@@ -19,6 +23,30 @@ class AccessLogMiddleware:
         self.log_access(request)  # Log access data
         response = self.get_response(request)
         return response
+
+    def fetch_organization_by_ip(self, ip: str) -> str:
+        """
+        Fetches the organization name using the provided IP address via an external API.
+        """
+        if ip == "127.0.0.1":
+            return "Local", "Local"
+
+        if ip == '68.173.141.46':
+            return "myPublicIP", "myPublicIP"
+
+        try:
+            api_url = f"http://ip-api.com/json/{ip}"
+            response = requests.get(api_url)
+            status_code = response.status_code
+
+            if status_code != 200:
+                return "Unknown", "Unknown"
+
+            response_data = response.json()
+            owner = response_data.get('org', "Unknown")
+            return owner, json.dumps(response_data).replace('\n', ' ')
+        except Exception:
+            return "Lookup Failed", "Lookup Failed"
 
     def get_browser_info(self, user_agent_string):
         """
@@ -57,6 +85,9 @@ class AccessLogMiddleware:
             # Identify the user
             user = request.user if request.user.is_authenticated else "Anonymous"
 
+            # Look up the organization for each IP address
+            owner, detail_info = self.fetch_organization_by_ip(ip_address)
+
             # Store the statistics into the database
             AccessStatistic.objects.create(
                 user=user,
@@ -65,14 +96,15 @@ class AccessLogMiddleware:
                 access_time=now(),
                 browser_info=browser_info,
                 is_robot=is_robot,
+                owner = owner,
+                detail_ipinfo = detail_info
             )
 
         except Exception as e:
             # Log any errors without breaking the site
             logger.error(f"Error logging access: {e}")
 
-    @staticmethod
-    def get_client_ip(request):
+    def get_client_ip(self,request):
         """
         Retrieve the client's IP address.
         """
