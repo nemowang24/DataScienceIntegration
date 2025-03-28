@@ -1,22 +1,47 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Real-time MFCC Calculation</title>
+    <title>Real-time Centroid Calculation</title>
     <script src="https://cdn.jsdelivr.net/npm/meyda/dist/web/meyda.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/regression/dist/regression.min.js"></script>
 </head>
 <body>
-<h1>Under construction! </h1>
 <hr>
 <h1>Real-Time MFCC Calculation</h1>
 
 <!-- Element to display MFCC output -->
-<p><strong>MFCC Output:</strong></p>
+<p><strong>detector status:</strong></p>
 <div id="mfcc-output"></div>
+
 
 <!-- Button to start microphone input -->
 <button id="start-button">Start MFCC Calculation</button>
+<hr>
+<div id="mfcc-debug"></div>
 
 <script>
+    // Import regression-js
+    const regression = window.regression;
+
+    // Perform linear regression on smoothedSpectralCentroidList
+    function performLinearRegression(dataList) {
+        // Prepare data for regression (x, y) pairs.
+        // Assume x as the index and y as the smoothed spectral centroid values.
+        const data = dataList.map((value, index) => [index, value]);
+
+        // Perform linear regression
+        const result = regression.linear(data);
+
+        // Output results
+        console.log('Linear regression equation:', result.string);
+        console.log('R-squared value:', result.r2);
+
+        // Return result
+        return result;
+    }
+
+    detector_status = 0
+
     document.getElementById('start-button').addEventListener('click', async function () {
         // Request audio from the user's microphone
         const stream = await navigator.mediaDevices.getUserMedia({audio: true});
@@ -36,8 +61,17 @@
 
         // Buffer to store the last 50 spectralCentroidInHz values
         const spectralCentroidBuffer = [];
-        const bufferSize_sc = 200; // Size of the smoothing window
-        let  counter = 0;
+        const bufferSize_sc = 200; // Size of the spectralCentroidBuffer window
+        let counter = 0;
+
+        // List to store smoothed spectral centroid values
+        const smoothedSpectralCentroidList = [];
+        const bufferSize_sc_smooth = 100; // Size of the smoothedSpectralCentroidList window
+
+        const smoothedRMSList = [];
+        const bufferSize_rms = 100;
+
+        const rms_threshold = 0.01
 
         // Create Meyda analyzer
         const analyzer = Meyda.createMeydaAnalyzer({
@@ -48,11 +82,27 @@
             callback: (features) => {
                 // Normalize spectralCentroid to Hz
                 const spectralCentroidInHz = features.spectralCentroid
-                    ? features.spectralCentroid / (512/2) * (sampleRate/2) // Convert to Hz
+                    ? features.spectralCentroid / (512 / 2) * (sampleRate / 2) // Convert to Hz
                     : null;
 
+                const rms = features.rms ? features.rms : null;
+                if (rms !== null) {
+                    // Add RMS value to smoothedRMSList
+                    smoothedRMSList.push(rms);
+
+                    // Ensure the list only holds the last 100 elements
+                    if (smoothedRMSList.length > bufferSize_rms) {
+                        smoothedRMSList.shift();
+                    }
+                }
+                // Calculate the mean RMS
+                const meanRMS =
+                    smoothedRMSList.length > 0
+                        ? smoothedRMSList.reduce((a, b) => a + b, 0) / smoothedRMSList.length
+                        : null;
+
                 // Smooth the spectralCentroidInHz with a rolling average
-                if (spectralCentroidInHz !== null) {
+                if (spectralCentroidInHz !== null && meanRMS > rms_threshold) {
                     // Add current value to the buffer
                     spectralCentroidBuffer.push(spectralCentroidInHz);
 
@@ -62,36 +112,42 @@
                     }
                 }
 
-                // Calculate smoothed spectral centroid (average of buffer values)
-                const smoothedSpectralCentroidInHz =
-                    spectralCentroidBuffer.length > 0
-                        ? spectralCentroidBuffer.reduce((a, b) => a + b, 0) / spectralCentroidBuffer.length
-                        : null;
 
-                // Display MFCC
-                const mfccOutput = features.mfcc ? `MFCC: ${features.mfcc.join(', ')}` : 'MFCC: -';
+                const regression = performLinearRegression(spectralCentroidBuffer)// [intercept, slope]
 
-                const rms = features.rms ? `RMS: ${features.rms.toFixed(8)}` : 'RMS: -';
+                if (detector_status == '1') {
+                    document.getElementById('mfcc-output').innerText = `Try to detect sounds\nrms${meanRMS}\nslope${regression.equation[1]}\n`;
+                    if (spectralCentroidBuffer.length > 50 && regression.equation[1] < 0) {
+                        detector_status = 2
+                    }
+                }
+                elif(detector_status == '2')
+                {
+                    document.getElementById('mfcc-output').innerText = `Try to detect boiling\n`;
+                    if (regression.equation[1] > 0) {
+                        detector_status = 3
 
+                        setTimeout(() => {
+                            detector_status = 4; // Update status after time is up
+                        }, 3 * 60 * 1000); // Set timer for 3 minutes
+                    }
+                }
+                elif(detector_status == '3')
+                {
+                    document.getElementById('mfcc-output').innerText = `Boiling detected, timing 3 minutes\n`;
 
-                // Display Smoothed Spectral Centroid in Hz
-                const spectralCentroidOutput = smoothedSpectralCentroidInHz
-                    ? `Spectral Centroid (Smoothed): ${smoothedSpectralCentroidInHz.toFixed(2)} Hz`
-                    : 'Spectral Centroid: -';
-
-                counter++;
-                if (counter === 2) {
-
-                    console.log(`${spectralCentroidOutput}, ${rms}`);
-                    counter = 0; // Reset counter if needed
+                }
+                elif(detector_status == '4')
+                {
+                    document.getElementById('mfcc-output').innerText = `Time up!\n`;
                 }
 
-
-
-                document.getElementById('mfcc-output').innerText = `${mfccOutput}\n${sampleRate}\n${spectralCentroidOutput}\n${rms}\n`;
+                document.getElementById('mfcc-debug').innerText = `rms${meanRMS}\nslope${regression.equation[1]}\n`;
 
             },
         });
+
+        detector_status = 1
 
         // Start the analyzer
         analyzer.start();
