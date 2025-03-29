@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Private PDF Viewer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        #pdf-iframe {
+            width: 100%;
+            height: 90vh;
+            border: none;
+            display: none;
+        }
+        #error-message {
+            color: red;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>From the AWS S3</h1>
+    <div id="pdf-container">
+        <p id="loading-message">Loading PDF...</p> <!-- Loading message -->
+        <iframe id="pdf-iframe"></iframe> <!-- PDF iframe for the presigned URL -->
+        <p id="error-message" style="display: none;">Failed to load the PDF. Please try again later.</p>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const fileName = "churnanalysishomework.pdf"; // The name of your PDF file in S3
+
+            // Fetch the presigned URL from the server
+            fetch(`/get-pdf-url/${fileName}/`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.presigned_url) {
+                        // Embed the presigned URL in the iframe
+                        const iframe = document.getElementById('pdf-iframe');
+                        iframe.src = data.presigned_url;
+                        iframe.style.display = 'block'; // Show the iframe
+                        document.getElementById('loading-message').style.display = 'none'; // Hide loading message
+                    } else {
+                        // Display error if the presigned URL cannot be retrieved
+                        document.getElementById('loading-message').style.display = 'none';
+                        document.getElementById('error-message').style.display = 'block';
+                    }
+                })
+                .catch(error => {
+                    // Display error message on fetch failure
+                    console.error("Error fetching presigned URL:", error);
+                    document.getElementById('loading-message').style.display = 'none';
+                    document.getElementById('error-message').style.display = 'block';
+                });
+        });
+    </script>
+</body>
+</html>

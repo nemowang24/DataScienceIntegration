@@ -29,7 +29,7 @@ SECRET_KEY = env.str("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool("DEBUG", default=False)
 
-ALLOWED_HOSTS = ["192.168.1.240", "localhost", "127.0.0.1"]
+ALLOWED_HOSTS = ["www.tropicw.net", "192.168.1.240", "localhost", "127.0.0.1"]
 
 # Application definition
 
@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+    'corsheaders',
     # Local
     "accounts",
     "pages",
@@ -58,6 +59,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
@@ -68,6 +70,12 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     # Add the account middleware:
     "allauth.account.middleware.AccountMiddleware",
+    'pages.middleware.AccessLogMiddleware',  # Adjust the path as needed
+]
+
+CORS_ALLOWED_ORIGINS = [
+    'https://www.tropicw.net',
+    'https://api.yourdomain.com',
 ]
 
 ROOT_URLCONF = "django_project.urls"
@@ -95,22 +103,22 @@ WSGI_APPLICATION = "django_project.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-# DATABASES = {
-#     "default": {
-#         "ENGINE": env.str('DATABASE_ENGINE'),
-#         'NAME': env.str('DATABASE_NAME'),
-#         'USER': env.str('DATABASE_USER'),
-#         'PASSWORD': env.str('DATABASE_PASSWORD'),
-#         'HOST': env.str('DATABASE_HOST'),
-#         'PORT': env.str('DATABASE_PORT')
-#     }
-# }
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',  # The database file path
+    "default": {
+        "ENGINE": env.str('DATABASE_ENGINE'),
+        'NAME': env.str('DATABASE_NAME'),
+        'USER': env.str('DATABASE_USER'),
+        'PASSWORD': env.str('DATABASE_PASSWORD'),
+        'HOST': env.str('DATABASE_HOST'),
+        'PORT': env.str('DATABASE_PORT')
     }
 }
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',  # The database file path
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -251,20 +259,28 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'handlers': {
+#         'console': {
+#             'level': 'DEBUG',
+#             'class': 'logging.StreamHandler',
+#         },
+#     },
+#     'loggers': {
+#         'django': {
+#             'handlers': ['console'],
+#             'level': 'DEBUG',
+#         },
+#     },
+# }
 
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'level': 'DEBUG',
-            'class': 'logging.StreamHandler',
-        },
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['console'],
-            'level': 'DEBUG',
-        },
-    },
-}
+AWS_ACCESS_KEY_ID = env.str("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = env.str("AWS_SECRET_ACCESS_KEY")
+AWS_REGION = env.str("AWS_REGION")
+AWS_S3_BUCKET_NAME = env.str("AWS_S3_BUCKET_NAME")
+AWS_S3_FILE_OVERWRITE = env.str("AWS_S3_FILE_OVERWRITE")
+AWS_DEFAULT_ACL = env.str("AWS_DEFAULT_ACL")
+
+API_BASE_URL = "http://ip-api.com/json"
