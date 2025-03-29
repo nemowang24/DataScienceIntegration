@@ -7,3 +7,5 @@ db.sqlite3
 *.mp4
 staticfiles
 media/
+materials
+.mov
