@@ -1,17 +1,69 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Introduction</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        span {
+            font-size: 1.75rem; /* Scales nicely on different devices */
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        p {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        a {
+            color: #007BFF;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsiveness using media queries */
+        @media (max-width: 768px) {
+            span {
+                font-size: 1.5rem;
+            }
+
+            p {
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            span {
+                font-size: 1.25rem;
+            }
+
+            p {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
 </head>
 <body>
-<span style="font-size: 28px;">Sometime the piped water has the smell of chlorine. <br>We need to keep the lid open and boil the water for 3 minutes, to
-    remove the chlorine. <br>This algorithm help to detect the boil and remind you the process is over.</span>
-
-
-<p>For more details, try <a href='{% url "boil_detect" %}'>
-    this app
-</a>.
+    <span>Sometime the piped water has the smell of chlorine. <br>We need to keep the lid open and boil the water for 3 minutes, to
+        remove the chlorine. <br>This algorithm helps detect the boil and reminds you the process is over.</span>
+    <br>
+    <span>For more details, try <a href="{% url 'boil_detect' %}">this app</a>.</span>
+    <br>
+    <span>Watch <a href="{% url 'boil_videoplay' %}">this video</a> to see how it works</span>
 </body>
 </html>

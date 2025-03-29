@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>VideoPlayer</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+
+        video {
+            width: 100%; /* Makes the video responsive */
+            aspect-ratio: 9 / 16;
+            object-fit: cover;
+            {#max-width: 600px; /* Ensures the video doesn't exceed its original size */#}
+            {#height: auto; /* Adjust the height automatically to maintain aspect ratio */#}
+        }
+
+        @media (max-width: 768px) {
+            video {
+                width: 100%; /* On smaller devices, the video takes full width of the screen */
+            }
+        }
+    </style>
+</head>
+<body>
+    <video controls>
+        <source src="https://public-datascience.s3.us-east-1.amazonaws.com/boilwater.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+</body>
+</html>

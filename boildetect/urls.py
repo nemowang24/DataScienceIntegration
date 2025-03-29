@@ -6,4 +6,5 @@ from django.views.generic import TemplateView
 urlpatterns = [
     path("detect", Boil_View.as_view(), name="boil_detect"),
     path("", TemplateView.as_view(template_name="boildetect/intro.html"), name="boil_intro"),
+    path("videoplay", TemplateView.as_view(template_name="boildetect/videoplay.html"), name="boil_videoplay"),
 ]
