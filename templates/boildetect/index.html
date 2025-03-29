@@ -23,7 +23,7 @@
     // Import regression-js
     const regression = window.regression;
 
-    // Perform linear regression on smoothedSpectralCentroidList
+    // Perform linear regression on SpectralCentroid
     function performLinearRegression(dataList) {
         // Prepare data for regression (x, y) pairs.
         // Assume x as the index and y as the smoothed spectral centroid values.
@@ -61,17 +61,17 @@
 
         // Buffer to store the last 50 spectralCentroidInHz values
         const spectralCentroidBuffer = [];
-        const bufferSize_sc = 200; // Size of the spectralCentroidBuffer window
+        const bufferSize_sc = 1000; // Size of the spectralCentroidBuffer window
         let counter = 0;
 
-        // List to store smoothed spectral centroid values
-        const smoothedSpectralCentroidList = [];
-        const bufferSize_sc_smooth = 100; // Size of the smoothedSpectralCentroidList window
 
         const smoothedRMSList = [];
-        const bufferSize_rms = 100;
+        const bufferSize_rms = 500;
 
-        const rms_threshold = 0.01
+        const rms_threshold = 0.001
+
+        const regressionList = [];
+        const bufferSize_regression = 1000;
 
         // Create Meyda analyzer
         const analyzer = Meyda.createMeydaAnalyzer({
@@ -97,7 +97,7 @@
                 }
                 // Calculate the mean RMS
                 const meanRMS =
-                    smoothedRMSList.length > 0
+                    smoothedRMSList.length >= bufferSize_rms
                         ? smoothedRMSList.reduce((a, b) => a + b, 0) / smoothedRMSList.length
                         : null;
 
@@ -112,42 +112,56 @@
                     }
                 }
 
+                const regression =
+                    spectralCentroidBuffer.length >= bufferSize_sc
+                        ? performLinearRegression(spectralCentroidBuffer)    // [slope, intercept]
+                        : null;
+                if (regression !== null) {
+                    // Add current value to the buffer
+                    regressionList.push(regressionList[0]);
 
-                const regression = performLinearRegression(spectralCentroidBuffer)// [intercept, slope]
+                    // If buffer exceeds the window size, remove the oldest value
+                    if (regressionList.length > bufferSize_regression) {
+                        regressionList.shift();
+                    }
+                }
+
 
                 if (detector_status == '1') {
-                    document.getElementById('mfcc-output').innerText = `Try to detect sounds\nrms${meanRMS}\nslope${regression.equation[1]}\n`;
-                    if (spectralCentroidBuffer.length > 50 && regression.equation[1] < 0) {
-                        detector_status = 2
+                    document.getElementById('mfcc-output').innerText = `Try to detect heating\nsmoothedRMSList.length: ${smoothedRMSList.length}\n`;
+                    if (smoothedRMSList.length >= bufferSize_rms) {
+                        detector_status = '1.1'
                     }
-                }
-                elif(detector_status == '2')
-                {
-                    document.getElementById('mfcc-output').innerText = `Try to detect boiling\n`;
-                    if (regression.equation[1] > 0) {
-                        detector_status = 3
+                } else if (detector_status == '1.1') {
+                    document.getElementById('mfcc-output').innerText = `Try to detect heating\nspectralCentroidBuffer.length: ${spectralCentroidBuffer.length}\n`;
+                    if (spectralCentroidBuffer.length >= bufferSize_sc) {
+                        detector_status = '1.2'
+                    }
+                } else if (detector_status == '1.2') {
 
-                        setTimeout(() => {
-                            detector_status = 4; // Update status after time is up
-                        }, 3 * 60 * 1000); // Set timer for 3 minutes
+                    if (meanRMS >= rms_threshold) {
+                        if (regression && regression.equation[0] > 0) {
+                            document.getElementById('mfcc-output').innerText = `Try to detect heating\nrms${meanRMS}\nslope${regression.equation[0]}\n`;
+                        } else if (regression && regression.equation[0] < 0) {
+                            detector_status = '2'
+                        }
                     }
-                }
-                elif(detector_status == '3')
-                {
+                } else if (detector_status == '2') {
+                    document.getElementById('mfcc-output').innerText = `Try to detect boiling\nrms${meanRMS}\nslope${regression.equation[0]}${regression.equation[1]}\n`;
+
+                } else if (detector_status == '3') {
                     document.getElementById('mfcc-output').innerText = `Boiling detected, timing 3 minutes\n`;
 
-                }
-                elif(detector_status == '4')
-                {
+                } else if (detector_status == '4') {
                     document.getElementById('mfcc-output').innerText = `Time up!\n`;
                 }
 
-                document.getElementById('mfcc-debug').innerText = `rms${meanRMS}\nslope${regression.equation[1]}\n`;
+                document.getElementById('mfcc-debug').innerText = `detector_status: ${detector_status}\n`;
 
             },
         });
 
-        detector_status = 1
+        detector_status = '1'
 
         // Start the analyzer
         analyzer.start();
