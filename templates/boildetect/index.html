@@ -112,10 +112,14 @@
                     }
                 }
 
-                const regression =
+                const regression_raw =
                     meanRMS != null && spectralCentroidBuffer.length >= bufferSize_sc
                         ? performLinearRegression(spectralCentroidBuffer)    // [slope, intercept]
                         : null;
+                const regression =
+                    regression_raw && regression_raw.equation[0] < 1
+                    ? regression_raw
+                            : regression;
                 if (regression !== null) {
                     // Add current value to the buffer
                     regressionList.push(regressionList[0]);
