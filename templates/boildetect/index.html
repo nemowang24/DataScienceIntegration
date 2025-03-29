@@ -148,7 +148,13 @@
                     }
                 } else if (detector_status == '2') {
                     document.getElementById('mfcc-output').innerText = `Try to detect boiling\nrms${meanRMS}\nslope${regression.equation[0]}${regression.equation[1]}\n`;
+                    if (regression.equation[0] > 0.06) {
+                        detector_status = '3'
 
+                        setTimeout(() => {
+                            detector_status = '4'; // Update status after time is up
+                        }, 3 * 60 * 1000); // Set timer for 3 minutes
+                    }
                 } else if (detector_status == '3') {
                     document.getElementById('mfcc-output').innerText = `Boiling detected, timing 3 minutes\n`;
 
