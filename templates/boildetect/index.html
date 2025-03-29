@@ -43,6 +43,9 @@
     detector_status = 0
 
     document.getElementById('start-button').addEventListener('click', async function () {
+
+        detector_status = '1'
+
         // Request audio from the user's microphone
         const stream = await navigator.mediaDevices.getUserMedia({audio: true});
 
@@ -61,7 +64,7 @@
 
         // Buffer to store the last 50 spectralCentroidInHz values
         const spectralCentroidBuffer = [];
-        const bufferSize_sc = Math.round(sampleRate/512*40); // Size of the spectralCentroidBuffer window
+        const bufferSize_sc = Math.round(sampleRate / 512 * 40); // Size of the spectralCentroidBuffer window
         let counter = 0;
 
 
@@ -117,9 +120,9 @@
                         ? performLinearRegression(spectralCentroidBuffer)    // [slope, intercept]
                         : null;
                 const regression =
-                    regression_raw && regression_raw.equation[0] < 1
-                    ? regression_raw
-                            : regression;
+                    regression_raw != null && regression_raw.equation[0] < 1
+                        ? regression_raw
+                        : null;
                 if (regression !== null) {
                     // Add current value to the buffer
                     regressionList.push(regressionList[0]);
@@ -167,11 +170,9 @@
                 }
 
                 document.getElementById('mfcc-debug').innerText = `detector_status: ${detector_status}\n`;
-
             },
         });
 
-        detector_status = '1'
 
         // Start the analyzer
         analyzer.start();
