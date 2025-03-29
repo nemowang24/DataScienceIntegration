@@ -113,7 +113,7 @@
                 }
 
                 const regression =
-                    spectralCentroidBuffer.length >= bufferSize_sc
+                    meanRMS != null && spectralCentroidBuffer.length >= bufferSize_sc
                         ? performLinearRegression(spectralCentroidBuffer)    // [slope, intercept]
                         : null;
                 if (regression !== null) {
@@ -140,9 +140,9 @@
                 } else if (detector_status == '1.2') {
 
                     if (meanRMS >= rms_threshold) {
-                        if (regression && regression.equation[0] > 0) {
+                        if (regression && regression.equation[0] > -0.1) {
                             document.getElementById('mfcc-output').innerText = `Try to detect heating\nrms${meanRMS}\nslope${regression.equation[0]}\n`;
-                        } else if (regression && regression.equation[0] < 0) {
+                        } else {
                             detector_status = '2'
                         }
                     }
