@@ -9,8 +9,71 @@
             font-size: 2em;
             color: red;
         }
+
+        #start-button {
+            font-size: 1.5em; /* Increase button font size for better readability */
+            padding: 15px 25px; /* Add padding for larger touch area */
+            background-color: #2386c8; /* Button background color */
+            color: white; /* Button text color */
+            border: none; /* Remove border */
+            border-radius: 8px; /* Rounded corners */
+            cursor: pointer; /* Pointer cursor on hover */
+        }
+
+        #start-button:active {
+            background-color: #1b6ca8; /* Slightly darker color when clicked */
+        }
+
+        /* Add responsiveness */
+        body {
+            font-family: Arial, sans-serif; /* Use clean font for readability */
+            margin: 10px;
+            font-size: 1.3em;
+        }
+
+        h1 {
+            font-size: 3rem; /* Adjust heading size for mobile screens */
+            text-align: center;
+        }
+
+        #mfcc-output, #mfcc-debug {
+            font-size: 2rem; /* Size debugging info appropriately */
+            word-wrap: break-word; /* Ensure no text overflow */
+        }
+
+        body {
+            display: flex;
+            flex-direction: column; /* Stack content vertically */
+            align-items: center; /* Center-align items horizontally */
+        }
+
+        hr {
+            width: 90%; /* Reduce horizontal line width for small screens */
+        }
+
+        div#mfcc-output, div#mfcc-debug {
+            max-width: 90%;
+            word-wrap: break-word;
+            overflow-wrap: break-word; /* Handle long content properly */
+        }
+
+        p {
+            font-size: 1.5rem;
+            margin: 10px 0;
+        }
+
+        div {
+            font-size: 1.5rem;
+        }
+
+        canvas {
+            width: 100%; /* Full width of parent container */
+            height: auto; /* Maintain aspect ratio */
+        }
+
     </style>
 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
 <hr>
@@ -72,6 +135,10 @@
     detector_status = 0
 
     document.getElementById('start-button').addEventListener('click', async function () {
+
+        // Hide the button
+        this.style.display = 'none';
+
 
         detector_status = '1'
 
