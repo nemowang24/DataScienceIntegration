@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Real-time Centroid Calculation</title>
+    <title>Boil Detection</title>
     <script src="https://cdn.jsdelivr.net/npm/meyda/dist/web/meyda.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/regression/dist/regression.min.js"></script>
     <style>
@@ -14,15 +14,15 @@
 </head>
 <body>
 <hr>
-<h1>Real-Time MFCC Calculation</h1>
+<h1>Boil Detection</h1>
 
 <!-- Element to display MFCC output -->
-<p><strong>detector status:</strong></p>
+<p><strong>Detector Status:</strong></p>
 <div id="mfcc-output"></div>
 
 
 <!-- Button to start microphone input -->
-<button id="start-button">Start MFCC Calculation</button>
+<button id="start-button">Start Detection</button>
 <hr>
 <div id="mfcc-debug"></div>
 
@@ -164,12 +164,12 @@
 
 
                 if (detector_status == '1') {
-                    document.getElementById('mfcc-output').innerText = `Try to detect heating\nsmoothedRMSList.length: ${smoothedRMSList.length}\n`;
+                    document.getElementById('mfcc-output').innerText = `Try to detect heating\nRMS samples length: ${smoothedRMSList.length}\n`;
                     if (smoothedRMSList.length >= bufferSize_rms) {
                         detector_status = '1.1'
                     }
                 } else if (detector_status == '1.1') {
-                    document.getElementById('mfcc-output').innerText = `Try to detect heating\nmeanRMS: ${meanRMS}\nspectralCentroidBuffer.length: ${spectralCentroidBuffer.length}\n`;
+                    document.getElementById('mfcc-output').innerText = `Try to detect heating\nmean RMS: ${meanRMS.toFixed(5)}\nfeature samples length: ${spectralCentroidBuffer.length}\n`;
                     if (spectralCentroidBuffer.length >= bufferSize_sc) {
                         detector_status = '1.2'
                     }
@@ -177,13 +177,13 @@
 
                     if (meanRMS >= rms_threshold) {
                         if (regression && regression.equation[0] > -0.06) {
-                            document.getElementById('mfcc-output').innerText = `Try to detect heating\nrms${meanRMS}\nslope${regression.equation[0]}\n`;
+                            document.getElementById('mfcc-output').innerText = `Try to detect heating\nRMS: ${meanRMS.toFixed(5)}\nfeature value: ${regression.equation[0].toFixed(3)}\n`;
                         } else {
                             detector_status = '2'
                         }
                     }
                 } else if (detector_status == '2') {
-                    document.getElementById('mfcc-output').innerText = `Try to detect boiling\nrms${meanRMS}\nslope${regression.equation[0]}${regression.equation[1]}\n`;
+                    document.getElementById('mfcc-output').innerText = `Try to detect boiling\nRMS: ${meanRMS}\nfeature value: ${regression.equation[0].toFixed(3)}\n`;
                     if (regression.equation[0] > 0.04) {
                         detector_status = '3'
 
