@@ -4,6 +4,13 @@
     <title>Real-time Centroid Calculation</title>
     <script src="https://cdn.jsdelivr.net/npm/meyda/dist/web/meyda.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/regression/dist/regression.min.js"></script>
+    <style>
+        .big-red {
+            font-size: 2em;
+            color: red;
+        }
+    </style>
+
 </head>
 <body>
 <hr>
@@ -39,6 +46,28 @@
         // Return result
         return result;
     }
+
+    function playBeep() {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        // Create an oscillator
+        const oscillator = audioCtx.createOscillator();
+        oscillator.type = 'sine'; // Sine wave for a simple beep
+        oscillator.frequency.setValueAtTime(440, audioCtx.currentTime); // Frequency in Hz (440 is the A note)
+
+        // Create a gain node to control the volume
+        const gainNode = audioCtx.createGain();
+        gainNode.gain.setValueAtTime(0.02, audioCtx.currentTime); // Low volume
+
+        // Connect oscillator -> gain -> speakers
+        oscillator.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+
+        // Play the sound for a short duration
+        oscillator.start();
+        oscillator.stop(audioCtx.currentTime + 0.2); // Play for 0.2 seconds
+    }
+
 
     detector_status = 0
 
@@ -166,7 +195,8 @@
                     document.getElementById('mfcc-output').innerText = `Boiling detected, timing 3 minutes\n`;
 
                 } else if (detector_status == '4') {
-                    document.getElementById('mfcc-output').innerText = `Time up!\n`;
+                    document.getElementById('mfcc-output').innerText = `Time up, Water is ready\n`;
+                    playBeep();
                 }
 
                 document.getElementById('mfcc-debug').innerText = `detector_status: ${detector_status}\n`;
