@@ -61,7 +61,7 @@
 
         // Buffer to store the last 50 spectralCentroidInHz values
         const spectralCentroidBuffer = [];
-        const bufferSize_sc = 1000; // Size of the spectralCentroidBuffer window
+        const bufferSize_sc = Math.round(sampleRate/512*40); // Size of the spectralCentroidBuffer window
         let counter = 0;
 
 
