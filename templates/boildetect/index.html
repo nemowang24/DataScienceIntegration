@@ -183,7 +183,7 @@
                         }
                     }
                 } else if (detector_status == '2') {
-                    document.getElementById('mfcc-output').innerText = `Try to detect boiling\nRMS: ${meanRMS}\nfeature value: ${regression.equation[0].toFixed(3)}\n`;
+                    document.getElementById('mfcc-output').innerText = `Try to detect boiling\nRMS: ${meanRMS.toFixed(5)}\nfeature value: ${regression.equation[0].toFixed(3)}\n`;
                     if (regression.equation[0] > 0.04) {
                         detector_status = '3'
 
