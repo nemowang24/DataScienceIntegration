@@ -176,7 +176,7 @@
                 } else if (detector_status == '1.2') {
 
                     if (meanRMS >= rms_threshold) {
-                        if (regression && regression.equation[0] > -0.1) {
+                        if (regression && regression.equation[0] > -0.08) {
                             document.getElementById('mfcc-output').innerText = `Try to detect heating\nrms${meanRMS}\nslope${regression.equation[0]}\n`;
                         } else {
                             detector_status = '2'
