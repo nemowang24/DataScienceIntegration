@@ -19,9 +19,6 @@
                 input2: input2Val,
                 input3: sanitizeValue(document.getElementById('input3').value),
                 input4: sanitizeValue(document.getElementById('input4').value),
-                input5: sanitizeValue(document.getElementById('input5').value),
-                input6: sanitizeValue(document.getElementById('input6').value),
-                input7: sanitizeValue(document.getElementById('input7').value),
             };
 
 
@@ -67,26 +64,26 @@
 
 {% block myvideo %}
     <form onsubmit="event.preventDefault(); callAPI();">
-        <label for="input1">resolution: 1024x1024:</label><br>
-        <input type="text" id="input1" name="input1"><br><br>
+        <label for="input1">resolution:</label><br>
+        <select id="input1" name="input1">
+            <option value="1024x1024" title="Square format" selected>1024x1024 (square)</option>
+            <option value="1024x1536" title="Portrait format">1024x1536 (portrait)</option>
+            <option value="1536x1024" title="Landscape format">1536x1024 (landscape)</option>
+        </select><br><br>
 
-        <label for="input2">quality: high</label><br>
-        <input type="text" id="input2" name="input2"><br><br>
+        <label for="input2">quality:</label><br>
+        <select id="input2" name="input2">
+            <option value="low" title="Generates images quickly with minimal detail">low: Generates images quickly with minimal detail</option>
+            <option value="medium" title="Balances image quality and generation speed">medium: Balances image quality and generation speed</option>
+            <option value="high" title="Produces detailed images with longer generation times" selected>high: Produces detailed images with longer generation times</option>
+        </select><br><br>
 
         <label for="input3">prompt</label><br>
-        <input type="text" id="input3" name="input3"><br><br>
+        <textarea id="input3" name="input3" rows="6" cols="50" style="width: 100%; max-width: 600px; resize: vertical;"></textarea><br><br>
 
         <label for="input4">notes</label><br>
-        <input type="text" id="input4" name="input4"><br><br>
+        <textarea id="input4" name="input4" rows="4" cols="50" style="width: 100%; max-width: 600px; resize: vertical;"></textarea><br><br>
 
-        <label for="input5">Input 5:</label><br>
-        <input type="text" id="input5" name="input5"><br><br>
-
-        <label for="input6">Input 6:</label><br>
-        <input type="text" id="input6" name="input6"><br><br>
-
-        <label for="input7">Input 7:</label><br>
-        <input type="text" id="input7" name="input7"><br><br>
 
         <button type="submit">Submit</button>
     </form>

@@ -13,7 +13,7 @@ class Prompts(models.Model):
     resolution = models.CharField(max_length=20)
     quality = models.CharField(max_length=20)
     note = models.CharField(max_length=1000)
-    prompt = models.CharField(max_length=1000)
+    prompt = models.CharField(max_length=5000)
     img_path = models.CharField(max_length=200)
     sessionid = models.CharField(max_length=100)
     date = models.DateTimeField(auto_now_add=True)
