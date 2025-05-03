@@ -59,13 +59,15 @@ class PromptListView(TemplateView):
                 date__lte=utc_day_end
             )
 
-            # Extract unique hours for the selected day
+            # Enumerate all possible hours (0-23) for the selected day
             unique_hours = {}
-            for prompt in day_filtered_prompts:
-                # Convert UTC time to local time for display
-                local_date = timezone.localtime(prompt.date)
-                hour_str = local_date.strftime('%H')
-                hour_display = local_date.strftime('%I %p').lstrip('0')  # Format: 1 PM (12-hour format)
+            for hour in range(24):
+                # Format the hour as a string (e.g., '00', '01', ..., '23')
+                hour_str = f"{hour:02d}"
+                # Create a datetime object for this hour to format it properly
+                hour_datetime = datetime(local_date.year, local_date.month, local_date.day, hour, 0, 0, tzinfo=current_tz)
+                # Format the hour for display (e.g., '12 AM', '1 AM', ..., '11 PM')
+                hour_display = hour_datetime.strftime('%I %p').lstrip('0')  # Format: 1 PM (12-hour format)
                 unique_hours[hour_str] = hour_display
 
             # Filter by hour if hour filter is provided
@@ -74,8 +76,8 @@ class PromptListView(TemplateView):
                 local_hour = int(hour_filter)
                 # Get the UTC offset in hours
                 utc_offset = timezone.get_current_timezone().utcoffset(datetime.now()).total_seconds() / 3600
-                # Calculate the UTC hour
-                utc_hour = (local_hour - int(utc_offset)) % 24
+                # Calculate the UTC hour (add offset to convert local to UTC)
+                utc_hour = (local_hour + int(utc_offset)) % 24
 
                 prompts = day_filtered_prompts.filter(
                     Q(date__hour=utc_hour)

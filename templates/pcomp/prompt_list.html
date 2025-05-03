@@ -1,6 +1,13 @@
 {% extends "helldivers/base.html" %}
 {% block title %}Prompts List{% endblock title %}
 {% block myscripts %}
+<script>
+    function dayFilterChanged(selectElement) {
+        // Simply submit the form
+        // This will only include the day parameter and reset any hour filter
+        selectElement.form.submit();
+    }
+</script>
 <style>
     /* Override base template styles to enable scrolling */
     html, body {
@@ -62,7 +69,7 @@
         <h5>Filter by day:</h5>
         <form method="get" action="{% url 'prompt_list' %}" class="mb-3">
             <div class="input-group">
-                <select name="day" class="form-select" id="dayFilter" onchange="this.form.submit()">
+                <select name="day" class="form-select" id="dayFilter" onchange="dayFilterChanged(this)">
                     <option value="">All Days</option>
                     {% for day_value, day_display in unique_days.items %}
                         <option value="{{ day_value }}" {% if current_day == day_value %}selected{% endif %}>{{ day_display }}</option>
