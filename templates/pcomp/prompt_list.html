@@ -1,0 +1,88 @@
+{% extends "helldivers/base.html" %}
+
+{% block title %}Prompts List{% endblock title %}
+
+{% block myscripts %}
+<style>
+    /* Override base template styles to enable scrolling */
+    html, body {
+        overflow: auto !important;
+        height: auto !important;
+        display: block !important;
+    }
+
+    .prompt-card {
+        margin-bottom: 20px;
+        height: 100%;
+    }
+
+    .prompt-image {
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+        border-radius: 5px;
+        cursor: pointer; /* Change cursor to indicate clickable */
+        transition: transform 0.3s ease; /* Smooth transition for hover effect */
+    }
+
+    .prompt-image:hover {
+        transform: scale(1.03); /* Slightly enlarge image on hover */
+    }
+
+    .prompt-text {
+        margin-top: 10px;
+        font-size: 0.9rem;
+    }
+
+    .prompt-container {
+        padding-top: 70px; /* Add padding to account for the fixed navbar */
+        margin-bottom: 30px; /* Add margin at the bottom for better scrolling experience */
+    }
+
+    .card-body {
+        overflow: hidden;
+    }
+
+    .prompt-details {
+        font-size: 0.8rem;
+        color: #6c757d;
+    }
+</style>
+{% endblock myscripts %}
+
+{% block myvideo %}
+<div class="container prompt-container">
+    <h1 class="mb-4">Prompts Gallery</h1>
+
+    <div class="row">
+        {% for prompt_item in prompts %}
+        <div class="col-md-4 mb-4">
+            <div class="card prompt-card">
+                <a href="{{ prompt_item.image_url }}" target="_blank">
+                    <img src="{{ prompt_item.image_url }}" class="prompt-image" alt="Generated image">
+                </a>
+                <div class="card-body">
+                    <h5 class="card-title">Prompt</h5>
+                    <p class="card-text prompt-text">{{ prompt_item.prompt }}</p>
+                    <div class="prompt-details">
+                        <p><strong>Model:</strong> {{ prompt_item.model }}</p>
+                        <p><strong>Resolution:</strong> {{ prompt_item.resolution }}</p>
+                        <p><strong>Quality:</strong> {{ prompt_item.quality }}</p>
+                        {% if prompt_item.note %}
+                        <p><strong>Note:</strong> {{ prompt_item.note }}</p>
+                        {% endif %}
+                        <p><strong>Date:</strong> {{ prompt_item.date|date:"F j, Y" }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                No prompts found in the database.
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock myvideo %}

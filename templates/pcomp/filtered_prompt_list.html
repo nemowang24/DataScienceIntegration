@@ -1,0 +1,99 @@
+{% extends "helldivers/base.html" %}
+
+{% block title %}All Prompts List{% endblock title %}
+
+{% block myscripts %}
+{% if current_filter %}
+<meta http-equiv="refresh" content="2;url=?processed={{ current_filter }}">{# Auto-refresh every 2 seconds with current filter #}
+{% else %}
+<meta http-equiv="refresh" content="2">{# Auto-refresh every 2 seconds #}
+{% endif %}
+<style>
+    /* Override base template styles to enable scrolling */
+    html, body {
+        overflow: auto !important;
+        height: auto !important;
+        display: block !important;
+    }
+
+    .prompt-card {
+        margin-bottom: 20px;
+        height: 100%;
+    }
+
+    .prompt-text {
+        margin-top: 10px;
+        font-size: 0.9rem;
+    }
+
+    .prompt-container {
+        padding-top: 70px; /* Add padding to account for the fixed navbar */
+        margin-bottom: 30px; /* Add margin at the bottom for better scrolling experience */
+    }
+
+    .card-body {
+        overflow: hidden;
+    }
+
+    .prompt-details {
+        font-size: 0.8rem;
+        color: #6c757d;
+    }
+
+    /* Sticky filter buttons */
+    .filter-container {
+        position: sticky;
+        top: 56px; /* Height of the navbar */
+        background-color: white;
+        z-index: 100;
+        padding: 10px 0;
+        border-bottom: 1px solid #dee2e6;
+        margin-bottom: 20px;
+    }
+</style>
+{% endblock myscripts %}
+
+{% block myvideo %}
+<div class="container prompt-container">
+    <h1 class="mb-4">Prompts List</h1>
+    {% if current_filter %}
+    <p class="lead">Showing prompts with processed status {{ current_filter }} (auto-refresh every 2 seconds)</p>
+    {% else %}
+    <p class="lead">Showing all prompts (auto-refresh every 2 seconds)</p>
+    {% endif %}
+
+    <div class="filter-container">
+        <h5>Filter by processed status:</h5>
+        <div class="btn-group btn-group-lg mb-3" role="group" aria-label="Filter by processed status">
+            <a href="{% url 'filtered_prompt_list' %}" class="btn btn-outline-primary {% if current_filter == None %}active{% endif %}">All</a>
+            <a href="?processed=0" class="btn btn-outline-primary {% if current_filter == '0' %}active{% endif %}">0</a>
+            <a href="?processed=1" class="btn btn-outline-primary {% if current_filter == '1' %}active{% endif %}">1</a>
+            <a href="?processed=2" class="btn btn-outline-primary {% if current_filter == '2' %}active{% endif %}">2</a>
+            <a href="?processed=3" class="btn btn-outline-primary {% if current_filter == '3' %}active{% endif %}">3</a>
+        </div>
+        <p>Showing <strong>{{ prompts|length }}</strong> prompts</p>
+    </div>
+
+    <div class="row">
+        {% for prompt_item in prompts %}
+        <div class="col-md-6 mb-4">
+            <div class="card prompt-card">
+                <div class="card-body">
+                    <h5 class="card-title">Prompt Information</h5>
+                    <div class="prompt-details">
+                        <p><strong>Processed Status:</strong> {{ prompt_item.processed }}</p>
+                    </div>
+                    <p class="card-text prompt-text">{{ prompt_item.prompt }}</p>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                No prompts found in the database.
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock myvideo %}
