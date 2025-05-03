@@ -6,6 +6,9 @@ from django.db.models import Q
 from django.utils import timezone
 from datetime import datetime, timedelta
 
+class HomeView(TemplateView):
+    template_name = 'pcomp/home.html'
+
 class PromptInputView(TemplateView):
     template_name = 'pcomp/prompt_input.html'
 

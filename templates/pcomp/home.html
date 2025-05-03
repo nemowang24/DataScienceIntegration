@@ -1,0 +1,45 @@
+{% extends "helldivers/base.html" %}
+
+{% block title %}Prompt Composer{% endblock title %}
+
+{% block myscripts %}
+{% endblock myscripts %}
+
+{% block myvideo %}
+    <div class="container mt-5">
+        <h1 class="mb-4">Prompt Composer</h1>
+        <p class="lead">Welcome to the Prompt Composer application. Use the links below to navigate to different features.</p>
+
+        <div class="row mt-5">
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Create New Prompt</h5>
+                        <p class="card-text">Generate images by creating new prompts with custom settings.</p>
+                        <a href="{% url 'PromptInputView' %}" class="btn btn-primary">Go to Prompt Input</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">View All Prompts</h5>
+                        <p class="card-text">Browse through all generated prompts and their corresponding images.</p>
+                        <a href="{% url 'prompt_list' %}" class="btn btn-primary">View Prompt Gallery</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Filtered Prompts</h5>
+                        <p class="card-text">View prompts filtered by processing status.</p>
+                        <a href="{% url 'filtered_prompt_list' %}" class="btn btn-primary">View Filtered Prompts</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock myvideo %}

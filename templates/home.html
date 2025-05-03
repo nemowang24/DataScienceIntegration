@@ -69,24 +69,4 @@
             <p>Telecom Churn Analysis</p>
         </a>
     </div>
-    <hr>
-    <div class="horizontal-container">
-        {% load static %}
-        <a href='{% url 'filtered_prompt_list' %}'>
-            <img src="https://via.placeholder.com/300x200?text=Filtered+Prompts" alt="Filtered Prompts">
-        </a>
-        <a href='{% url 'filtered_prompt_list' %}'>
-            <p>View Filtered Prompts (processed != 2)</p>
-        </a>
-    </div>
-    <hr>
-    <div class="horizontal-container">
-        {% load static %}
-        <a href='{% url 'prompt_list' %}'>
-            <img src="https://via.placeholder.com/300x200?text=Prompts+Gallery" alt="Prompts Gallery">
-        </a>
-        <a href='{% url 'prompt_list' %}'>
-            <p>View Prompts Gallery</p>
-        </a>
-    </div>
 {% endblock content %}
