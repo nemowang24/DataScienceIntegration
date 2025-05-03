@@ -13,8 +13,49 @@ class PromptListView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
+        # Get the day and hour filter values from request GET parameters
+        day_filter = self.request.GET.get('day', None)
+        hour_filter = self.request.GET.get('hour', None)
+
         # Get all prompts from the database
-        prompts = Prompts.objects.all()
+        all_prompts = Prompts.objects.all().order_by('-date')  # Order by date descending
+
+        # Extract unique days from prompts
+        unique_days = {}
+        for prompt in all_prompts:
+            day_str = prompt.date.strftime('%Y-%m-%d')
+            day_display = prompt.date.strftime('%B %d, %Y')  # Format: January 01, 2023
+            unique_days[day_str] = day_display
+
+        # Filter prompts by day if a day filter is provided
+        if day_filter:
+            # Filter prompts for the selected day
+            from datetime import datetime
+            filter_date = datetime.strptime(day_filter, '%Y-%m-%d').date()
+            from django.db.models import Q
+            day_filtered_prompts = all_prompts.filter(
+                Q(date__year=filter_date.year) & 
+                Q(date__month=filter_date.month) & 
+                Q(date__day=filter_date.day)
+            )
+
+            # Extract unique hours for the selected day
+            unique_hours = {}
+            for prompt in day_filtered_prompts:
+                hour_str = prompt.date.strftime('%H')
+                hour_display = prompt.date.strftime('%I %p').lstrip('0')  # Format: 1 PM (12-hour format)
+                unique_hours[hour_str] = hour_display
+
+            # Filter by hour if hour filter is provided
+            if hour_filter:
+                prompts = day_filtered_prompts.filter(
+                    Q(date__hour=int(hour_filter))
+                )
+            else:
+                prompts = day_filtered_prompts
+        else:
+            prompts = all_prompts
+            unique_hours = {}
 
         # Create S3 client
         s3_client = boto3.client(
@@ -48,7 +89,21 @@ class PromptListView(TemplateView):
                 print(f"Error generating presigned URL for {prompt.img_path}: {str(e)}")
                 continue
 
+        # Pass the data to the template
         context['prompts'] = prompts_data
+        context['unique_days'] = unique_days
+        context['unique_hours'] = unique_hours
+        context['current_day'] = day_filter
+        context['current_hour'] = hour_filter
+
+        # Add the selected day's display name if a day is selected
+        if day_filter and day_filter in unique_days:
+            context['selected_day_display'] = unique_days[day_filter]
+
+        # Add the selected hour's display name if an hour is selected
+        if hour_filter and hour_filter in unique_hours:
+            context['selected_hour_display'] = unique_hours[hour_filter]
+
         return context
 
 class FilteredPromptListView(TemplateView):

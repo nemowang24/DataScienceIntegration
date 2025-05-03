@@ -38,11 +38,70 @@
         font-size: 0.8rem;
         color: #6c757d;
     }
+    /* Sticky filter container */
+    .filter-container {
+        position: sticky;
+        top: 56px; /* Height of the navbar */
+        background-color: white;
+        z-index: 100;
+        padding: 10px 0;
+        border-bottom: 1px solid #dee2e6;
+        margin-bottom: 20px;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
 </style>
 {% endblock myscripts %}
 {% block myvideo %}
 <div class="container prompt-container">
     <h1 class="mb-4">Prompts Gallery</h1>
+
+    <!-- Filter container -->
+    <div class="filter-container mb-4">
+        <!-- Day filter dropdown -->
+        <h5>Filter by day:</h5>
+        <form method="get" action="{% url 'prompt_list' %}" class="mb-3">
+            <div class="input-group">
+                <select name="day" class="form-select" id="dayFilter" onchange="this.form.submit()">
+                    <option value="">All Days</option>
+                    {% for day_value, day_display in unique_days.items %}
+                        <option value="{{ day_value }}" {% if current_day == day_value %}selected{% endif %}>{{ day_display }}</option>
+                    {% endfor %}
+                </select>
+                {% if current_day %}
+                    <a href="{% url 'prompt_list' %}" class="btn btn-outline-secondary">Clear Day Filter</a>
+                {% endif %}
+            </div>
+        </form>
+
+        <!-- Hour filter dropdown (only visible when a day is selected) -->
+        {% if current_day %}
+        <h5>Filter by hour:</h5>
+        <form method="get" action="{% url 'prompt_list' %}" class="mb-3">
+            <!-- Hidden input to preserve day filter -->
+            <input type="hidden" name="day" value="{{ current_day }}">
+            <div class="input-group">
+                <select name="hour" class="form-select" id="hourFilter" onchange="this.form.submit()">
+                    <option value="">All Hours</option>
+                    {% for hour_value, hour_display in unique_hours.items %}
+                        <option value="{{ hour_value }}" {% if current_hour == hour_value %}selected{% endif %}>{{ hour_display }}</option>
+                    {% endfor %}
+                </select>
+                {% if current_hour %}
+                    <a href="{% url 'prompt_list' %}?day={{ current_day }}" class="btn btn-outline-secondary">Clear Hour Filter</a>
+                {% endif %}
+            </div>
+        </form>
+        {% endif %}
+
+        <!-- Display filter information -->
+        <p>
+            Showing <strong>{{ prompts|length }}</strong> prompts
+            {% if selected_day_display %} for {{ selected_day_display }}{% endif %}
+            {% if selected_hour_display %} at {{ selected_hour_display }}{% endif %}
+        </p>
+    </div>
+
     <div class="row">
         {% for prompt_item in prompts %}
         <div class="col-md-4 mb-4">
