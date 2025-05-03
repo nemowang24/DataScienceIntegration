@@ -1,7 +1,5 @@
 {% extends "helldivers/base.html" %}
-
 {% block title %}All Prompts List{% endblock title %}
-
 {% block myscripts %}
 {% if current_filter %}
 <meta http-equiv="refresh" content="2;url=?processed={{ current_filter }}">{# Auto-refresh every 2 seconds with current filter #}
@@ -15,31 +13,25 @@
         height: auto !important;
         display: block !important;
     }
-
     .prompt-card {
         margin-bottom: 20px;
         height: 100%;
     }
-
     .prompt-text {
         margin-top: 10px;
         font-size: 0.9rem;
     }
-
     .prompt-container {
         padding-top: 70px; /* Add padding to account for the fixed navbar */
         margin-bottom: 30px; /* Add margin at the bottom for better scrolling experience */
     }
-
     .card-body {
         overflow: hidden;
     }
-
     .prompt-details {
         font-size: 0.8rem;
         color: #6c757d;
     }
-
     /* Sticky filter buttons */
     .filter-container {
         position: sticky;
@@ -52,7 +44,6 @@
     }
 </style>
 {% endblock myscripts %}
-
 {% block myvideo %}
 <div class="container prompt-container">
     <h1 class="mb-4">Prompts List</h1>
@@ -61,7 +52,6 @@
     {% else %}
     <p class="lead">Showing all prompts (auto-refresh every 2 seconds)</p>
     {% endif %}
-
     <div class="filter-container">
         <h5>Filter by processed status:</h5>
         <div class="btn-group btn-group-lg mb-3" role="group" aria-label="Filter by processed status">
@@ -73,7 +63,6 @@
         </div>
         <p>Showing <strong>{{ prompts|length }}</strong> prompts</p>
     </div>
-
     <div class="row">
         {% for prompt_item in prompts %}
         <div class="col-md-6 mb-4">

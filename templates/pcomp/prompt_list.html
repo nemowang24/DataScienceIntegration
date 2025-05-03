@@ -1,7 +1,5 @@
 {% extends "helldivers/base.html" %}
-
 {% block title %}Prompts List{% endblock title %}
-
 {% block myscripts %}
 <style>
     /* Override base template styles to enable scrolling */
@@ -10,12 +8,10 @@
         height: auto !important;
         display: block !important;
     }
-
     .prompt-card {
         margin-bottom: 20px;
         height: 100%;
     }
-
     .prompt-image {
         width: 100%;
         height: auto;
@@ -24,36 +20,29 @@
         cursor: pointer; /* Change cursor to indicate clickable */
         transition: transform 0.3s ease; /* Smooth transition for hover effect */
     }
-
     .prompt-image:hover {
         transform: scale(1.03); /* Slightly enlarge image on hover */
     }
-
     .prompt-text {
         margin-top: 10px;
         font-size: 0.9rem;
     }
-
     .prompt-container {
         padding-top: 70px; /* Add padding to account for the fixed navbar */
         margin-bottom: 30px; /* Add margin at the bottom for better scrolling experience */
     }
-
     .card-body {
         overflow: hidden;
     }
-
     .prompt-details {
         font-size: 0.8rem;
         color: #6c757d;
     }
 </style>
 {% endblock myscripts %}
-
 {% block myvideo %}
 <div class="container prompt-container">
     <h1 class="mb-4">Prompts Gallery</h1>
-
     <div class="row">
         {% for prompt_item in prompts %}
         <div class="col-md-4 mb-4">

@@ -17,29 +17,38 @@ class PromptListView(TemplateView):
         prompts = Prompts.objects.all()
 
         # Create S3 client
-        s3_client = boto3.client('s3')
+        s3_client = boto3.client(
+            "s3",
+            aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+            aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+            region_name=settings.AWS_S3_REGION_NAME,
+        )
 
-        # Generate presigned URLs for each prompt's image
-        prompts_with_images = []
+        # Include all necessary fields for the template
+        prompts_data = []
         for prompt in prompts:
-            # Generate a presigned URL for the image (valid for 1 hour)
-            image_url = s3_client.generate_presigned_url(
-                'get_object',
-                Params={'Bucket': settings.AWS_S3_BUCKET_NAME, 'Key': prompt.img_path},
-                ExpiresIn=3600
-            )
+            # Generate a presigned URL for the S3 object
+            try:
+                presigned_url = s3_client.generate_presigned_url(
+                    "get_object",
+                    Params={"Bucket": settings.AWS_S3_BUCKET_NAME, "Key": prompt.img_path},
+                    ExpiresIn=3600,  # URL valid for 1 hour
+                )
+                prompts_data.append({
+                    'prompt': prompt.prompt,
+                    'model': prompt.model,
+                    'resolution': prompt.resolution,
+                    'quality': prompt.quality,
+                    'note': prompt.note,
+                    'date': prompt.date,
+                    'image_url': presigned_url  # Presigned URL for S3 object
+                })
+            except Exception as e:
+                # If there's an error generating the presigned URL, log it and continue
+                print(f"Error generating presigned URL for {prompt.img_path}: {str(e)}")
+                continue
 
-            prompts_with_images.append({
-                'prompt': prompt.prompt,
-                'image_url': image_url,
-                'model': prompt.model,
-                'resolution': prompt.resolution,
-                'quality': prompt.quality,
-                'note': prompt.note,
-                'date': prompt.date
-            })
-
-        context['prompts'] = prompts_with_images
+        context['prompts'] = prompts_data
         return context
 
 class FilteredPromptListView(TemplateView):
