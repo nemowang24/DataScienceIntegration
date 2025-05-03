@@ -3,6 +3,8 @@ import boto3
 from api.models import Prompts
 from django.conf import settings
 from django.db.models import Q
+from django.utils import timezone
+from datetime import datetime, timedelta
 
 class PromptInputView(TemplateView):
     template_name = 'pcomp/prompt_input.html'
@@ -42,17 +44,26 @@ class PromptListView(TemplateView):
             # Extract unique hours for the selected day
             unique_hours = {}
             for prompt in day_filtered_prompts:
-                hour_str = prompt.date.strftime('%H')
-                hour_display = prompt.date.strftime('%I %p').lstrip('0')  # Format: 1 PM (12-hour format)
+                # Convert UTC time to local time for display
+                local_date = timezone.localtime(prompt.date)
+                hour_str = local_date.strftime('%H')
+                hour_display = local_date.strftime('%I %p').lstrip('0')  # Format: 1 PM (12-hour format)
                 unique_hours[hour_str] = hour_display
 
             # Filter by hour if hour filter is provided
             if hour_filter:
+                # Convert local hour to UTC hour for filtering
+                local_hour = int(hour_filter)
+                # Get the UTC offset in hours
+                utc_offset = timezone.get_current_timezone().utcoffset(datetime.now()).total_seconds() / 3600
+                # Calculate the UTC hour
+                utc_hour = (local_hour - int(utc_offset)) % 24
+
                 prompts = day_filtered_prompts.filter(
-                    Q(date__hour=int(hour_filter))
-                )
+                    Q(date__hour=utc_hour)
+                ).order_by('-date')
             else:
-                prompts = day_filtered_prompts
+                prompts = day_filtered_prompts.order_by('-date')
         else:
             prompts = all_prompts
             unique_hours = {}
@@ -119,10 +130,10 @@ class FilteredPromptListView(TemplateView):
         if processed_filter is not None and processed_filter.isdigit():
             # Convert to integer and filter
             processed_value = int(processed_filter)
-            prompts = Prompts.objects.filter(processed=processed_value)
+            prompts = Prompts.objects.filter(processed=processed_value).order_by('-date')
         else:
             # If no filter or invalid filter, show all prompts
-            prompts = Prompts.objects.all()
+            prompts = Prompts.objects.all().order_by('-date')
             processed_filter = None
 
         # Only include processed and prompt fields
