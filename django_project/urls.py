@@ -41,6 +41,8 @@ urlpatterns = [
     path("boildetect/", include("boildetect.urls")),
     path("pages/", include("pages.urls")),
 
+    path("pcomp/", include("pcomp.urls")),
+
 ]
 
 if settings.DEBUG:  # Allows debug_toolbar only in DEBUG mode

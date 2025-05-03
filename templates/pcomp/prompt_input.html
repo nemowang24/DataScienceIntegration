@@ -1,0 +1,97 @@
+{% extends "helldivers/base.html" %}
+
+{% block myscripts %}
+    <script>
+        // A helper function to ensure a safe string in case the field is empty
+        function sanitizeValue(rawValue) {
+            return (rawValue && rawValue.trim() !== '') ? rawValue : '(none)';
+        }
+
+        function callAPI() {
+            // Gather the input values
+            const input1Raw = document.getElementById('input1').value;
+            const input1Val = input1Raw && input1Raw.trim() !== '' ? input1Raw : '1024x1024';
+            const input2Raw = document.getElementById('input2').value;
+            const input2Val = input2Raw && input2Raw.trim() !== '' ? input2Raw : 'high';
+
+            const data = {
+                input1: input1Val,
+                input2: input2Val,
+                input3: sanitizeValue(document.getElementById('input3').value),
+                input4: sanitizeValue(document.getElementById('input4').value),
+                input5: sanitizeValue(document.getElementById('input5').value),
+                input6: sanitizeValue(document.getElementById('input6').value),
+                input7: sanitizeValue(document.getElementById('input7').value),
+            };
+
+
+            doImageGen(data)
+        }
+
+        function getCsrfToken() {
+            return document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        }
+
+        async function doImageGen(value) {
+            try {
+
+                const csrfToken = getCsrfToken();
+
+
+                const response = await fetch('/api/prompt/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken, // Add the CSRF token here
+                    },
+                    body: JSON.stringify({counterValue: value}),
+                });
+
+                // Handle server response
+                if (response.ok) {
+                    const result = await response.json();
+                    const resultElement = document.getElementById('apiResult');
+                    resultElement.textContent = JSON.stringify(result, null, 2);
+
+                    console.log(data.message);
+                } else {
+                    console.error('API request failed:', response.status);
+                }
+
+            } catch (error) {
+                console.error('Error occurred while sending API request:', error);
+            }
+        }
+    </script>
+{% endblock myscripts %}
+
+{% block myvideo %}
+    <form onsubmit="event.preventDefault(); callAPI();">
+        <label for="input1">resolution: 1024x1024:</label><br>
+        <input type="text" id="input1" name="input1"><br><br>
+
+        <label for="input2">quality: high</label><br>
+        <input type="text" id="input2" name="input2"><br><br>
+
+        <label for="input3">prompt</label><br>
+        <input type="text" id="input3" name="input3"><br><br>
+
+        <label for="input4">notes</label><br>
+        <input type="text" id="input4" name="input4"><br><br>
+
+        <label for="input5">Input 5:</label><br>
+        <input type="text" id="input5" name="input5"><br><br>
+
+        <label for="input6">Input 6:</label><br>
+        <input type="text" id="input6" name="input6"><br><br>
+
+        <label for="input7">Input 7:</label><br>
+        <input type="text" id="input7" name="input7"><br><br>
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <!-- A container to display API response -->
+    <h3>API Result:</h3>
+    <pre id="apiResult"></pre>
+{% endblock myvideo %}

@@ -25,6 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env.str("SECRET_KEY")
+OPEN_API_KEY = env.str("OPEN_API_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool("DEBUG", default=False)
@@ -275,12 +276,3 @@ SOCIALACCOUNT_PROVIDERS = {
 #         },
 #     },
 # }
-
-AWS_ACCESS_KEY_ID = env.str("AWS_ACCESS_KEY_ID")
-AWS_SECRET_ACCESS_KEY = env.str("AWS_SECRET_ACCESS_KEY")
-AWS_REGION = env.str("AWS_REGION")
-AWS_S3_BUCKET_NAME = env.str("AWS_S3_BUCKET_NAME")
-AWS_S3_FILE_OVERWRITE = env.str("AWS_S3_FILE_OVERWRITE")
-AWS_DEFAULT_ACL = env.str("AWS_DEFAULT_ACL")
-
-API_BASE_URL = "http://ip-api.com/json"
