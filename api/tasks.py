@@ -7,6 +7,7 @@ from rest_framework.viewsets import ViewSet
 from rest_framework import status, request
 import logging
 import json
+import requests
 from django.views import View
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
@@ -93,6 +94,13 @@ class API_saveprompt(ViewSet):
                     'input7': input7,
                 }
             }
+
+            # Make HTTP request to helldiver2.online
+            try:
+                requests.get("http://www.helldiver2.online/api/task/periodic")
+            except Exception as e:
+                # Log the error but continue with the response
+                logger.error(f"Failed to invoke helldiver2.online API: {str(e)}")
 
             return JsonResponse(response_data, status=200)
 
