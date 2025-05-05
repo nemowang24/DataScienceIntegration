@@ -127,7 +127,8 @@ class PromptListView(TemplateView):
                     'quality': prompt.quality,
                     'note': prompt.note,
                     'date': local_date,  # Local time instead of UTC
-                    'image_url': presigned_url  # Presigned URL for S3 object
+                    'image_url': presigned_url,  # Presigned URL for S3 object
+                    'errorMsg': prompt.imgen_result  # Adding imgen_result as errorMsg
                 })
             except Exception as e:
                 # If there's an error generating the presigned URL, log it and continue
@@ -173,11 +174,17 @@ class FilteredPromptListView(TemplateView):
         # Only include processed and prompt fields
         prompts_data = []
         for prompt in prompts:
-            prompts_data.append({
+            prompt_data = {
                 'id': prompt.id,
                 'prompt': prompt.prompt,
                 'processed': prompt.processed
-            })
+            }
+
+            # Include imgen_result as errorMsg when processed filter is '3'
+            if processed_filter == '3':
+                prompt_data['errorMsg'] = prompt.imgen_result
+
+            prompts_data.append(prompt_data)
 
         # Pass the current filter to the template
         context['prompts'] = prompts_data

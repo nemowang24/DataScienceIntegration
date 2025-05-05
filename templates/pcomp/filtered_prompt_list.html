@@ -72,6 +72,9 @@
                     <div class="prompt-details">
                         <p><strong>ID:</strong> {{ prompt_item.id }}</p>
                         <p><strong>Processed Status:</strong> {{ prompt_item.processed }}</p>
+                        {% if current_filter == '3' and prompt_item.errorMsg %}
+                        <p><strong>errorMsg:</strong> {{ prompt_item.errorMsg }}</p>
+                        {% endif %}
                     </div>
                     <p class="card-text prompt-text">{{ prompt_item.prompt }}</p>
                 </div>
