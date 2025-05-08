@@ -1,10 +1,12 @@
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, View
 import boto3
 from api.models import Prompts
 from django.conf import settings
 from django.db.models import Q
 from django.utils import timezone
 from datetime import datetime, timedelta
+from django.shortcuts import redirect
+from django.contrib import messages
 
 class HomeView(TemplateView):
     template_name = 'pcomp/home.html'
@@ -190,3 +192,33 @@ class FilteredPromptListView(TemplateView):
         context['prompts'] = prompts_data
         context['current_filter'] = processed_filter
         return context
+
+class StartEC2View(View):
+    def get(self, request):
+        try:
+            # Create Lambda client
+            lambda_client = boto3.client(
+                "lambda",
+                aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+                region_name=settings.AWS_S3_REGION_NAME,
+            )
+
+            # Invoke the Lambda function
+            response = lambda_client.invoke(
+                FunctionName='startec2',
+                InvocationType='RequestResponse'  # Use 'Event' for asynchronous invocation
+            )
+
+            # Check the response
+            status_code = response['StatusCode']
+            if status_code == 200:
+                messages.success(request, "EC2 instance started successfully!")
+            else:
+                messages.error(request, f"Failed to start EC2 instance. Status code: {status_code}")
+
+        except Exception as e:
+            messages.error(request, f"Error starting EC2 instance: {str(e)}")
+
+        # Redirect back to the home page
+        return redirect('pcomp_home')
