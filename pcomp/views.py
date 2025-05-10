@@ -217,10 +217,10 @@ class PromptMetaListView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        # Get the day, hour, and prompt_meta filter values from request GET parameters
+        # Get the day, hour, and prompt_meta_hash filter values from request GET parameters
         day_filter = self.request.GET.get('day', None)
         hour_filter = self.request.GET.get('hour', None)
-        prompt_meta_filter = self.request.GET.get('prompt_meta', None)
+        prompt_meta_filter = self.request.GET.get('prompt_meta_hash', None)
 
         # Get all prompts from the database
         all_prompts = Prompts.objects.all().order_by('-date')  # Order by date descending
@@ -234,12 +234,12 @@ class PromptMetaListView(TemplateView):
             day_display = local_date.strftime('%B %d, %Y')  # Format: January 01, 2023
             unique_days[day_str] = day_display
 
-        # Extract unique prompt_meta values from prompts
-        unique_prompt_metas = {}
+        # Extract unique prompt_meta_hash values from prompts
+        unique_prompt_meta_hashes = {}
         for prompt in all_prompts:
-            if prompt.prompt_meta and prompt.prompt_meta.strip():  # Only include non-empty prompt_meta values
-                prompt_meta_str = prompt.prompt_meta.strip()
-                unique_prompt_metas[prompt_meta_str] = prompt_meta_str  # Use the prompt_meta as both key and display value
+            if prompt.prompt_meta_hash and prompt.prompt_meta_hash.strip():  # Only include non-empty prompt_meta_hash values
+                prompt_meta_hash_str = prompt.prompt_meta_hash.strip()
+                unique_prompt_meta_hashes[prompt_meta_hash_str] = prompt_meta_hash_str  # Use the prompt_meta_hash as both key and display value
 
         # Filter prompts by day if a day filter is provided
         if day_filter:
@@ -306,9 +306,9 @@ class PromptMetaListView(TemplateView):
             prompts = all_prompts
             unique_hours = {}
 
-        # Filter prompts by prompt_meta if a prompt_meta filter is provided
+        # Filter prompts by prompt_meta_hash if a prompt_meta_hash filter is provided
         if prompt_meta_filter:
-            prompts = prompts.filter(prompt_meta=prompt_meta_filter)
+            prompts = prompts.filter(prompt_meta_hash=prompt_meta_filter)
 
         # Create S3 client
         s3_client = boto3.client(
@@ -350,10 +350,10 @@ class PromptMetaListView(TemplateView):
         context['prompts'] = prompts_data
         context['unique_days'] = unique_days
         context['unique_hours'] = unique_hours
-        context['unique_prompt_metas'] = unique_prompt_metas
+        context['unique_prompt_meta_hashes'] = unique_prompt_meta_hashes
         context['current_day'] = day_filter
         context['current_hour'] = hour_filter
-        context['current_prompt_meta'] = prompt_meta_filter
+        context['current_prompt_meta_hash'] = prompt_meta_filter
 
         # Add the selected day's display name if a day is selected
         if day_filter and day_filter in unique_days:
@@ -363,9 +363,9 @@ class PromptMetaListView(TemplateView):
         if hour_filter and hour_filter in unique_hours:
             context['selected_hour_display'] = unique_hours[hour_filter]
 
-        # Add the selected prompt_meta's display name if a prompt_meta is selected
-        if prompt_meta_filter and prompt_meta_filter in unique_prompt_metas:
-            context['selected_prompt_meta_display'] = unique_prompt_metas[prompt_meta_filter]
+        # Add the selected prompt_meta_hash's display name if a prompt_meta_hash is selected
+        if prompt_meta_filter and prompt_meta_filter in unique_prompt_meta_hashes:
+            context['selected_prompt_meta_hash_display'] = unique_prompt_meta_hashes[prompt_meta_filter]
 
         return context
 

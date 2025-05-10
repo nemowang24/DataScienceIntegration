@@ -1,5 +1,7 @@
 {% extends "pcomp/base.html" %}
-{% block title %}All Prompts List{% endblock title %}
+
+{% block title %}Processing Status{% endblock title %}
+
 {% block myscripts %}
 {% if current_filter %}
 <meta http-equiv="refresh" content="2;url=?processed={{ current_filter }}">{# Auto-refresh every 2 seconds with current filter #}
