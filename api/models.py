@@ -23,6 +23,7 @@ class Prompts(models.Model):
     word = models.CharField(max_length=100, default="")
     prompt_meta = models.CharField(max_length=3000, default="")
     inqueue = models.BooleanField(default=False)
+    prompt_meta_hash = models.CharField(max_length=1000, default="")
 
     def __str__(self):
         return str(self.id)

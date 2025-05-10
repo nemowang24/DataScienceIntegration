@@ -12,6 +12,8 @@ from django.views import View
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from .models import Clicks, Prompts
+from .calc_hash import get_doc_hash
+
 
 logger = logging.getLogger(__name__)
 
@@ -68,6 +70,7 @@ class API_saveprompt(ViewSet):
             input7 = counter_value.get('input7', '(none)')
             word = counter_value.get('word', '')
             prompt_meta = counter_value.get('prompt_meta', '')
+            prompt_meta_hash = get_doc_hash(prompt_meta)
 
             session_id = self.request.session.session_key
             if session_id is None:
@@ -82,7 +85,8 @@ class API_saveprompt(ViewSet):
                 note=notes,
                 sessionid=session_id,
                 word=word,
-                prompt_meta=prompt_meta)
+                prompt_meta=prompt_meta,
+                prompt_meta_hash=prompt_meta_hash)
             prompt_db.save()
 
             # Prepare a response
