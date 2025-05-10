@@ -1,4 +1,4 @@
-{% extends "helldivers/base.html" %}
+{% extends "pcomp/base.html" %}
 
 {% block title %}Prompt Composer{% endblock title %}
 
@@ -24,7 +24,7 @@
             <div class="col-md-4 mb-4">
                 <div class="card h-100">
                     <div class="card-body">
-                        <h5 class="card-title">View All Prompts</h5>
+                        <h5 class="card-title">Filter image by word</h5>
                         <p class="card-text">Browse through all generated prompts and their corresponding images.</p>
                         <a href="{% url 'prompt_list' %}" class="btn btn-primary">View Prompt Gallery</a>
                     </div>
@@ -34,7 +34,7 @@
             <div class="col-md-4 mb-4">
                 <div class="card h-100">
                     <div class="card-body">
-                        <h5 class="card-title">Filtered Prompts</h5>
+                        <h5 class="card-title">Process Status</h5>
                         <p class="card-text">View prompts filtered by processing status.</p>
                         <a href="{% url 'filtered_prompt_list' %}" class="btn btn-primary">View Filtered Prompts</a>
                     </div>
@@ -54,8 +54,8 @@
             <div class="col-md-4 mb-4">
                 <div class="card h-100">
                     <div class="card-body">
-                        <h5 class="card-title">Prompt Meta List</h5>
-                        <p class="card-text">View metadata information about prompts and their processing status.</p>
+                        <h5 class="card-title">Filter image by prompt_meta</h5>
+                        <p class="card-text">Browse through all generated prompts and their corresponding images.</p>
                         <a href="{% url 'prompt_meta_list' %}" class="btn btn-primary">View Prompt Meta List</a>
                     </div>
                 </div>
