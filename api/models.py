@@ -20,6 +20,9 @@ class Prompts(models.Model):
     processed = models.IntegerField(default=0)
     imgen_result = models.CharField(max_length=3000, default="")
     time_used = models.FloatField(default=0)
+    word = models.CharField(max_length=100, default="")
+    prompt_meta = models.CharField(max_length=3000, default="")
+    inqueue = models.BooleanField(default=False)
 
     def __str__(self):
         return str(self.id)

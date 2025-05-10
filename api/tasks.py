@@ -66,6 +66,8 @@ class API_saveprompt(ViewSet):
             input5 = counter_value.get('input5', '(none)')
             input6 = counter_value.get('input6', '(none)')
             input7 = counter_value.get('input7', '(none)')
+            word = counter_value.get('word', '')
+            prompt_meta = counter_value.get('prompt_meta', '')
 
             session_id = self.request.session.session_key
             if session_id is None:
@@ -78,7 +80,9 @@ class API_saveprompt(ViewSet):
                 quality=quality,
                 prompt=prompt,
                 note=notes,
-                sessionid=session_id)
+                sessionid=session_id,
+                word=word,
+                prompt_meta=prompt_meta)
             prompt_db.save()
 
             # Prepare a response
@@ -92,6 +96,8 @@ class API_saveprompt(ViewSet):
                     'input5': input5,
                     'input6': input6,
                     'input7': input7,
+                    'word': word,
+                    'prompt_meta': prompt_meta
                 }
             }
 

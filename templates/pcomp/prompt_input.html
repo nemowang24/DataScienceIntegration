@@ -7,22 +7,69 @@
             return (rawValue && rawValue.trim() !== '') ? rawValue : '(none)';
         }
 
-        function callAPI() {
+        async function callAPI() {
+            // Clear previous results
+            document.getElementById('apiResult').textContent = '';
+            const statusElement = document.getElementById('processingStatus');
+            statusElement.innerHTML = '';
+
             // Gather the input values
             const input1Raw = document.getElementById('input1').value;
             const input1Val = input1Raw && input1Raw.trim() !== '' ? input1Raw : '1024x1024';
             const input2Raw = document.getElementById('input2').value;
-            const input2Val = input2Raw && input2Raw.trim() !== '' ? input2Raw : 'high';
+            const input2Val = input2Raw && input2Raw.trim() !== '' ? input2Raw : 'low';
+            const promptText = document.getElementById('input3').value;
+            const wordsText = document.getElementById('words').value;
 
-            const data = {
-                input1: input1Val,
-                input2: input2Val,
-                input3: sanitizeValue(document.getElementById('input3').value),
-                input4: sanitizeValue(document.getElementById('input4').value),
-            };
+            // If words textarea is empty, just submit once with the original prompt
+            if (!wordsText || wordsText.trim() === '') {
+                statusElement.innerHTML = '<p>Processing original prompt...</p>';
 
+                const data = {
+                    input1: input1Val,
+                    input2: input2Val,
+                    input3: sanitizeValue(promptText),
+                    input4: sanitizeValue(document.getElementById('input4').value),
+                };
 
-            doImageGen(data)
+                await doImageGen(data);
+                statusElement.innerHTML = '<p>Processing complete!</p>';
+                return;
+            }
+
+            // Split words by newline and strip them
+            const words = wordsText.split('\n')
+                .map(word => word.trim())
+                .filter(word => word !== ''); // Remove empty lines
+
+            statusElement.innerHTML = `<p>Processing ${words.length} words...</p>`;
+
+            // For each word, replace {word} in the prompt and submit
+            for (let i = 0; i < words.length; i++) {
+                const word = words[i];
+
+                // Update status
+                statusElement.innerHTML = `
+                    <p>Processing word ${i+1} of ${words.length}: "${word}"</p>
+                    <progress value="${i+1}" max="${words.length}"></progress>
+                `;
+
+                const replacedPrompt = promptText.replace(/{word}/g, word);
+
+                const data = {
+                    input1: input1Val,
+                    input2: input2Val,
+                    input3: sanitizeValue(replacedPrompt),
+                    input4: sanitizeValue(document.getElementById('input4').value),
+                    // Include the word being processed
+                    word: word,
+                    prompt_meta: promptText,
+                };
+
+                await doImageGen(data);
+            }
+
+            statusElement.innerHTML = `<p>All ${words.length} words processed successfully!</p>`;
         }
 
         function getCsrfToken() {
@@ -31,9 +78,7 @@
 
         async function doImageGen(value) {
             try {
-
                 const csrfToken = getCsrfToken();
-
 
                 const response = await fetch('/api/prompt/', {
                     method: 'POST',
@@ -48,9 +93,19 @@
                 if (response.ok) {
                     const result = await response.json();
                     const resultElement = document.getElementById('apiResult');
-                    resultElement.textContent = JSON.stringify(result, null, 2);
 
-                    console.log(data.message);
+                    // Append to existing results instead of replacing
+                    const currentContent = resultElement.textContent || '';
+                    const newContent = currentContent 
+                        ? currentContent + '\n\n' + JSON.stringify(result, null, 2) 
+                        : JSON.stringify(result, null, 2);
+
+                    resultElement.textContent = newContent;
+
+                    // Scroll to the bottom of the results
+                    resultElement.scrollTop = resultElement.scrollHeight;
+
+                    console.log(result.message);
                 } else {
                     console.error('API request failed:', response.status);
                 }
@@ -73,9 +128,9 @@
 
         <label for="input2">quality:</label><br>
         <select id="input2" name="input2">
-            <option value="low" title="Generates images quickly with minimal detail">low: Generates images quickly with minimal detail</option>
+            <option value="low" title="Generates images quickly with minimal detail" selected>low: Generates images quickly with minimal detail</option>
             <option value="medium" title="Balances image quality and generation speed">medium: Balances image quality and generation speed</option>
-            <option value="high" title="Produces detailed images with longer generation times" selected>high: Produces detailed images with longer generation times</option>
+            <option value="high" title="Produces detailed images with longer generation times">high: Produces detailed images with longer generation times</option>
         </select><br><br>
 
         <label for="input3">prompt</label><br>
@@ -84,11 +139,17 @@
         <label for="input4">notes</label><br>
         <textarea id="input4" name="input4" rows="4" cols="50" style="width: 100%; max-width: 600px; resize: vertical;"></textarea><br><br>
 
+        <label for="words">Words (one per line)</label><br>
+        <textarea id="words" name="words" rows="4" cols="50" style="width: 100%; max-width: 600px; resize: vertical;"></textarea><br><br>
 
         <button type="submit">Submit</button>
     </form>
 
+    <!-- A container to display processing status -->
+    <h3>Processing Status:</h3>
+    <div id="processingStatus"></div>
+
     <!-- A container to display API response -->
     <h3>API Result:</h3>
-    <pre id="apiResult"></pre>
+    <pre id="apiResult" style="max-height: 400px; overflow-y: auto;"></pre>
 {% endblock myvideo %}
