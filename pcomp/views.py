@@ -142,7 +142,8 @@ class PromptListView(TemplateView):
                     'note': prompt.note,
                     'date': local_date,  # Local time instead of UTC
                     'image_url': presigned_url,  # Presigned URL for S3 object
-                    'errorMsg': prompt.imgen_result  # Adding imgen_result as errorMsg
+                    'errorMsg': prompt.imgen_result,  # Adding imgen_result as errorMsg
+                    'prompt_meta_hash': prompt.prompt_meta_hash  # Adding prompt_meta_hash
                 })
             except Exception as e:
                 # If there's an error generating the presigned URL, log it and continue
