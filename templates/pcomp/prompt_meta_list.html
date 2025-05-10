@@ -1,0 +1,171 @@
+{% extends "helldivers/base.html" %}
+{% block title %}Prompts Meta List{% endblock title %}
+{% block myscripts %}
+<script>
+    function dayFilterChanged(selectElement) {
+        // Simply submit the form
+        // This will only include the day parameter and reset any hour filter
+        selectElement.form.submit();
+    }
+</script>
+<style>
+    /* Override base template styles to enable scrolling */
+    html, body {
+        overflow: auto !important;
+        height: auto !important;
+        display: block !important;
+    }
+    .prompt-card {
+        margin-bottom: 20px;
+        height: 100%;
+    }
+    .prompt-image {
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+        border-radius: 5px;
+        cursor: pointer; /* Change cursor to indicate clickable */
+        transition: transform 0.3s ease; /* Smooth transition for hover effect */
+    }
+    .prompt-image:hover {
+        transform: scale(1.03); /* Slightly enlarge image on hover */
+    }
+    .prompt-text {
+        margin-top: 10px;
+        font-size: 0.9rem;
+    }
+    .prompt-container {
+        padding-top: 70px; /* Add padding to account for the fixed navbar */
+        margin-bottom: 30px; /* Add margin at the bottom for better scrolling experience */
+    }
+    .card-body {
+        overflow: hidden;
+    }
+    .prompt-details {
+        font-size: 0.8rem;
+        color: #6c757d;
+    }
+    /* Sticky filter container */
+    .filter-container {
+        position: sticky;
+        top: 56px; /* Height of the navbar */
+        background-color: white;
+        z-index: 100;
+        padding: 10px 0;
+        border-bottom: 1px solid #dee2e6;
+        margin-bottom: 20px;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+</style>
+{% endblock myscripts %}
+{% block myvideo %}
+<div class="container prompt-container">
+    <h1 class="mb-4">Prompts Meta Gallery</h1>
+
+    <!-- Filter container -->
+    <div class="filter-container mb-4">
+        <!-- Day filter dropdown -->
+        <h5>Filter by day:</h5>
+        <form method="get" action="{% url 'prompt_meta_list' %}" class="mb-3">
+            <div class="input-group">
+                <select name="day" class="form-select" id="dayFilter" onchange="dayFilterChanged(this)">
+                    <option value="">All Days</option>
+                    {% for day_value, day_display in unique_days.items %}
+                        <option value="{{ day_value }}" {% if current_day == day_value %}selected{% endif %}>{{ day_display }}</option>
+                    {% endfor %}
+                </select>
+                {% if current_day %}
+                    <a href="{% url 'prompt_meta_list' %}" class="btn btn-outline-secondary">Clear Day Filter</a>
+                {% endif %}
+            </div>
+        </form>
+
+        <!-- Hour filter dropdown (only visible when a day is selected) -->
+        {% if current_day %}
+        <h5>Filter by hour:</h5>
+        <form method="get" action="{% url 'prompt_meta_list' %}" class="mb-3">
+            <!-- Hidden input to preserve day filter -->
+            <input type="hidden" name="day" value="{{ current_day }}">
+            <div class="input-group">
+                <select name="hour" class="form-select" id="hourFilter" onchange="this.form.submit()">
+                    <option value="">All Hours</option>
+                    {% for hour_value, hour_display in unique_hours.items %}
+                        <option value="{{ hour_value }}" {% if current_hour == hour_value %}selected{% endif %}>{{ hour_display }}</option>
+                    {% endfor %}
+                </select>
+                {% if current_hour %}
+                    <a href="{% url 'prompt_meta_list' %}?day={{ current_day }}" class="btn btn-outline-secondary">Clear Hour Filter</a>
+                {% endif %}
+            </div>
+        </form>
+        {% endif %}
+
+        <!-- Prompt Meta filter -->
+        <h5>Filter by prompt meta:</h5>
+        <form method="get" action="{% url 'prompt_meta_list' %}" class="mb-3">
+            <!-- Hidden inputs to preserve other filters -->
+            {% if current_day %}
+            <input type="hidden" name="day" value="{{ current_day }}">
+            {% endif %}
+            {% if current_hour %}
+            <input type="hidden" name="hour" value="{{ current_hour }}">
+            {% endif %}
+            <div class="input-group">
+                <select name="prompt_meta" class="form-select" id="promptMetaFilter" onchange="this.form.submit()">
+                    <option value="">All Prompt Metas</option>
+                    {% for prompt_meta_value, prompt_meta_display in unique_prompt_metas.items %}
+                        <option value="{{ prompt_meta_value }}" {% if current_prompt_meta == prompt_meta_value %}selected{% endif %}>{{ prompt_meta_display }}</option>
+                    {% endfor %}
+                </select>
+                {% if current_prompt_meta %}
+                    <a href="{% url 'prompt_meta_list' %}{% if current_day %}?day={{ current_day }}{% if current_hour %}&hour={{ current_hour }}{% endif %}{% endif %}" class="btn btn-outline-secondary">Clear Prompt Meta Filter</a>
+                {% endif %}
+            </div>
+        </form>
+
+        <!-- Display filter information -->
+        <p>
+            Showing <strong>{{ prompts|length }}</strong> prompts
+            {% if selected_day_display %} for {{ selected_day_display }}{% endif %}
+            {% if selected_hour_display %} at {{ selected_hour_display }}{% endif %}
+            {% if selected_prompt_meta_display %} with prompt meta "{{ selected_prompt_meta_display }}"{% endif %}
+        </p>
+    </div>
+
+    <div class="row">
+        {% for prompt_item in prompts %}
+        <div class="col-md-4 mb-4">
+            <div class="card prompt-card">
+                <a href="{{ prompt_item.image_url }}" target="_blank">
+                    <img src="{{ prompt_item.image_url }}" class="prompt-image" alt="Generated image">
+                </a>
+                <div class="card-body">
+                    <h5 class="card-title">Prompt</h5>
+                    <p class="card-text prompt-text">{{ prompt_item.prompt }}</p>
+                    <div class="prompt-details">
+                        <p><strong>ID:</strong> {{ prompt_item.id }}</p>
+                        <p><strong>Model:</strong> {{ prompt_item.model }}</p>
+                        <p><strong>Resolution:</strong> {{ prompt_item.resolution }}</p>
+                        <p><strong>Quality:</strong> {{ prompt_item.quality }}</p>
+                        {% if prompt_item.note %}
+                        <p><strong>Note:</strong> {{ prompt_item.note }}</p>
+                        {% endif %}
+                        {% if prompt_item.errorMsg %}
+                        <p><strong>errorMsg:</strong> {{ prompt_item.errorMsg }}</p>
+                        {% endif %}
+                        <p><strong>Date:</strong> {{ prompt_item.date|date:"F j, Y, g:i A" }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                No prompts found in the database.
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock myvideo %}
