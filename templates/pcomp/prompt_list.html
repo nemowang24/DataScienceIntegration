@@ -101,11 +101,35 @@
         </form>
         {% endif %}
 
+        <!-- Word filter -->
+        <h5>Filter by word:</h5>
+        <form method="get" action="{% url 'prompt_list' %}" class="mb-3">
+            <!-- Hidden inputs to preserve other filters -->
+            {% if current_day %}
+            <input type="hidden" name="day" value="{{ current_day }}">
+            {% endif %}
+            {% if current_hour %}
+            <input type="hidden" name="hour" value="{{ current_hour }}">
+            {% endif %}
+            <div class="input-group">
+                <select name="word" class="form-select" id="wordFilter" onchange="this.form.submit()">
+                    <option value="">All Words</option>
+                    {% for word_value, word_display in unique_words.items %}
+                        <option value="{{ word_value }}" {% if current_word == word_value %}selected{% endif %}>{{ word_display }}</option>
+                    {% endfor %}
+                </select>
+                {% if current_word %}
+                    <a href="{% url 'prompt_list' %}{% if current_day %}?day={{ current_day }}{% if current_hour %}&hour={{ current_hour }}{% endif %}{% endif %}" class="btn btn-outline-secondary">Clear Word Filter</a>
+                {% endif %}
+            </div>
+        </form>
+
         <!-- Display filter information -->
         <p>
             Showing <strong>{{ prompts|length }}</strong> prompts
             {% if selected_day_display %} for {{ selected_day_display }}{% endif %}
             {% if selected_hour_display %} at {{ selected_hour_display }}{% endif %}
+            {% if selected_word_display %} with word "{{ selected_word_display }}"{% endif %}
         </p>
     </div>
 

@@ -20,9 +20,10 @@ class PromptListView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        # Get the day and hour filter values from request GET parameters
+        # Get the day, hour, and word filter values from request GET parameters
         day_filter = self.request.GET.get('day', None)
         hour_filter = self.request.GET.get('hour', None)
+        word_filter = self.request.GET.get('word', None)
 
         # Get all prompts from the database
         all_prompts = Prompts.objects.all().order_by('-date')  # Order by date descending
@@ -35,6 +36,13 @@ class PromptListView(TemplateView):
             day_str = local_date.strftime('%Y-%m-%d')
             day_display = local_date.strftime('%B %d, %Y')  # Format: January 01, 2023
             unique_days[day_str] = day_display
+
+        # Extract unique words from prompts
+        unique_words = {}
+        for prompt in all_prompts:
+            if prompt.word and prompt.word.strip():  # Only include non-empty words
+                word_str = prompt.word.strip()
+                unique_words[word_str] = word_str  # Use the word as both key and display value
 
         # Filter prompts by day if a day filter is provided
         if day_filter:
@@ -101,6 +109,10 @@ class PromptListView(TemplateView):
             prompts = all_prompts
             unique_hours = {}
 
+        # Filter prompts by word if a word filter is provided
+        if word_filter:
+            prompts = prompts.filter(word=word_filter)
+
         # Create S3 client
         s3_client = boto3.client(
             "s3",
@@ -141,8 +153,10 @@ class PromptListView(TemplateView):
         context['prompts'] = prompts_data
         context['unique_days'] = unique_days
         context['unique_hours'] = unique_hours
+        context['unique_words'] = unique_words
         context['current_day'] = day_filter
         context['current_hour'] = hour_filter
+        context['current_word'] = word_filter
 
         # Add the selected day's display name if a day is selected
         if day_filter and day_filter in unique_days:
@@ -151,6 +165,10 @@ class PromptListView(TemplateView):
         # Add the selected hour's display name if an hour is selected
         if hour_filter and hour_filter in unique_hours:
             context['selected_hour_display'] = unique_hours[hour_filter]
+
+        # Add the selected word's display name if a word is selected
+        if word_filter and word_filter in unique_words:
+            context['selected_word_display'] = unique_words[word_filter]
 
         return context
 
