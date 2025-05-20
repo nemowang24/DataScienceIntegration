@@ -1,5 +1,5 @@
 from django.urls import path, include
-from .views import Intro_view, Practice_view, Statistic_view, WaterML_View
+from .views import Intro_view, Practice_view, Statistic_view, WaterML_View, RecommendationIntroView, RecommendationView
 
 from rest_framework import routers
 
@@ -14,6 +14,8 @@ urlpatterns = [
 
     path("statistic/", Statistic_view.as_view(), name="counter_statistic"),
     path("cold_or_hot/", WaterML_View.as_view(), name="helldivers_check_water"),
+    path("intro_rec/", RecommendationIntroView.as_view(), name="helldivers_intro_rec"),
+    path("recommendation/", RecommendationView.as_view(), name="helldivers_recommendation"),
     # path("", include(router.urls)),
 ]
 

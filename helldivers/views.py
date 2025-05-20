@@ -220,3 +220,11 @@ class Statistic_view(TemplateView):
 
 class WaterML_View(TemplateView):
     template_name = "helldivers/publish_coldhot.html"
+
+
+class RecommendationIntroView(TemplateView):
+    template_name = "helldivers/intro_rec.html"
+
+
+class RecommendationView(TemplateView):
+    template_name = "helldivers/publish_recommendation.html"

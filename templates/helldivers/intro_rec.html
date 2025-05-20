@@ -1,0 +1,32 @@
+{% extends "helldivers/base.html" %}
+
+{% block title %}Recommendation System{% endblock title %}
+
+{% block myvideo %}
+    {% load static %}
+    <main>
+        <div class="game-intro">
+            <h1>Recommendation System</h1>
+
+            <p class="intro-text">
+                This is an independent course homework about the recommendation system for Amazon Books. I still remember last semester I watch the cloud training process all night. Now I have the RTX4090, 192GB SysMem, 14900K CPU, Raid1 NVME. I really enjoy the arbitrary viewing local data with pycharm. Hope cloud notebook can be as easy as local. 
+            </p>
+
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <img src="{% static 'helldivers/rec_outline.png' %}" alt="Recommendation System Outline" class="img-fluid">
+                    <p class="text-center mt-2">Recommendation System Outline</p>
+                </div>
+
+                <div class="col-md-6">
+                    <img src="{% static 'helldivers/rec_sqlite.png' %}" alt="Recommendation System SQLite" class="img-fluid">
+                    <p class="text-center mt-2">Recommendation System SQLite</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="button-container">
+            <a href="{% url 'helldivers_recommendation' %}" class="btn btn-primary">View Recommendation System Details</a>
+        </div>
+    </main>
+{% endblock myvideo %}
