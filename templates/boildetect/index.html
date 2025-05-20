@@ -1,7 +1,8 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Boil Detection</title>
+{% extends "helldivers/base.html" %}
+
+{% block title %}Boil Detection{% endblock title %}
+
+{% block myscripts %}
     <script src="https://cdn.jsdelivr.net/npm/meyda/dist/web/meyda.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/regression/dist/regression.min.js"></script>
     <style>
@@ -24,13 +25,6 @@
             background-color: #1b6ca8; /* Slightly darker color when clicked */
         }
 
-        /* Add responsiveness */
-        body {
-            font-family: Arial, sans-serif; /* Use clean font for readability */
-            margin: 10px;
-            font-size: 1.3em;
-        }
-
         h1 {
             font-size: 3rem; /* Adjust heading size for mobile screens */
             text-align: center;
@@ -39,12 +33,6 @@
         #mfcc-output, #mfcc-debug {
             font-size: 2rem; /* Size debugging info appropriately */
             word-wrap: break-word; /* Ensure no text overflow */
-        }
-
-        body {
-            display: flex;
-            flex-direction: column; /* Stack content vertically */
-            align-items: center; /* Center-align items horizontally */
         }
 
         hr {
@@ -70,24 +58,24 @@
             width: 100%; /* Full width of parent container */
             height: auto; /* Maintain aspect ratio */
         }
-
     </style>
+{% endblock myscripts %}
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-<body>
-<hr>
-<h1>Boil Detection</h1>
+{% block myvideo %}
+<div class="container mt-5">
+    <hr>
+    <h1>Boil Detection</h1>
 
-<!-- Element to display MFCC output -->
-<p><strong>Detector Status:</strong></p>
-<div id="mfcc-output"></div>
+    <!-- Element to display MFCC output -->
+    <p><strong>Detector Status:</strong></p>
+    <div id="mfcc-output"></div>
 
 
-<!-- Button to start microphone input -->
-<button id="start-button">Start Detection</button>
-<hr>
-<div id="mfcc-debug"></div>
+    <!-- Button to start microphone input -->
+    <button id="start-button">Start Detection</button>
+    <hr>
+    <div id="mfcc-debug"></div>
+</div>
 
 <script>
     // Import regression-js
@@ -275,5 +263,4 @@
         analyzer.start();
     });
 </script>
-</body>
-</html>
+{% endblock myvideo %}
