@@ -69,4 +69,14 @@
             <p>Telecom Churn Analysis</p>
         </a>
     </div>
+    <hr>
+    <div class="horizontal-container">
+        {% load static %}
+        <a href='{% url "intro_churn" %}'>
+            <img src="{% static 'helldivers/churn_important_feature.png' %}" alt="Customer Churn Analysis">
+        </a>
+        <a href='{% url "intro_churn" %}'>
+            <p>Customer Churn Analysis Project</p>
+        </a>
+    </div>
 {% endblock content %}

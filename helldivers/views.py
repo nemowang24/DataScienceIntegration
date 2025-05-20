@@ -228,3 +228,11 @@ class RecommendationIntroView(TemplateView):
 
 class RecommendationView(TemplateView):
     template_name = "helldivers/publish_recommendation.html"
+
+
+class ChurnIntroView(TemplateView):
+    template_name = "helldivers/intro_churn.html"
+
+
+class PublishChurnView(TemplateView):
+    template_name = "helldivers/publish_churn.html"

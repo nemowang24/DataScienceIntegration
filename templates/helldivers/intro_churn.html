@@ -1,0 +1,90 @@
+{% extends 'helldivers/base.html' %}
+{% load static %}
+
+{% block title %}Churn Analysis Project{% endblock title %}
+
+{% block myscripts %}
+<style>
+    .churn-container {
+        margin-top: 80px;
+        padding: 30px;
+        max-width: 900px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .churn-header {
+        text-align: center;
+        margin-bottom: 30px;
+        color: #333;
+    }
+
+    .churn-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 30px;
+    }
+
+    .churn-text {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        text-align: justify;
+        color: #444;
+        background-color: #f9f9f9;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .churn-image {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    .churn-link {
+        margin-top: 20px;
+        text-align: center;
+    }
+
+    .churn-button {
+        display: inline-block;
+        padding: 12px 24px;
+        background: linear-gradient(45deg, #ff6600, #ffcc00);
+        color: white;
+        text-decoration: none;
+        border-radius: 30px;
+        font-weight: bold;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .churn-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 8px rgba(0,0,0,0.15);
+        color: white;
+    }
+</style>
+{% endblock myscripts %}
+
+{% block myvideo %}
+<div class="churn-container">
+    <div class="churn-header">
+        <h1>Customer Churn Analysis Project</h1>
+    </div>
+
+    <div class="churn-content">
+        <div class="churn-text">
+            <p>Customer churn prediction is a critical aspect of business analytics that helps companies identify customers who are likely to discontinue their service. Through careful analysis and feature engineering, we've discovered that comparing a customer's last month expense to their average monthly expense provides significant predictive power.</p>
+        </div>
+
+        <img src="{% static 'helldivers/churn_important_feature.png' %}" alt="Churn Analysis Important Feature" class="churn-image">
+
+        <div class="churn-link">
+            <a href="{% url 'publish_churn' %}" class="churn-button">View Detailed Analysis</a>
+        </div>
+    </div>
+</div>
+{% endblock myvideo %}
