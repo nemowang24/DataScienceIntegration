@@ -79,4 +79,14 @@
             <p>Customer Churn Analysis Project</p>
         </a>
     </div>
+    <hr>
+    <div class="horizontal-container">
+        {% load static %}
+        <a href='{% url "helldivers_intro_rec" %}'>
+            <img src="{% static 'helldivers/rec_outline.png' %}" alt="Recommendation System">
+        </a>
+        <a href='{% url "helldivers_intro_rec" %}'>
+            <p>Amazon Books Recommendation System</p>
+        </a>
+    </div>
 {% endblock content %}
