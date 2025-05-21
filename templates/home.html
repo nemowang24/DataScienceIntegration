@@ -89,4 +89,14 @@
             <p>Amazon Books Recommendation System</p>
         </a>
     </div>
+    <hr>
+    <div class="horizontal-container">
+        {% load static %}
+        <a href='{% url "intro_claim" %}'>
+            <img src="{% static 'helldivers/claim_bnp.png' %}" alt="Claims Management">
+        </a>
+        <a href='{% url "intro_claim" %}'>
+            <p>Claims Management Project</p>
+        </a>
+    </div>
 {% endblock content %}

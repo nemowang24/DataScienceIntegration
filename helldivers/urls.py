@@ -1,5 +1,5 @@
 from django.urls import path, include
-from .views import Intro_view, Practice_view, Statistic_view, WaterML_View, RecommendationIntroView, RecommendationView, ChurnIntroView, PublishChurnView
+from .views import Intro_view, Practice_view, Statistic_view, WaterML_View, RecommendationIntroView, RecommendationView, ChurnIntroView, PublishChurnView, ClaimIntroView, PublishClaimView
 
 from rest_framework import routers
 
@@ -18,6 +18,8 @@ urlpatterns = [
     path("recommendation/", RecommendationView.as_view(), name="helldivers_recommendation"),
     path("intro_churn/", ChurnIntroView.as_view(), name="intro_churn"),
     path("publish_churn/", PublishChurnView.as_view(), name="publish_churn"),
+    path("intro_claim/", ClaimIntroView.as_view(), name="intro_claim"),
+    path("publish_claim/", PublishClaimView.as_view(), name="publish_claim"),
     # path("", include(router.urls)),
 ]
 

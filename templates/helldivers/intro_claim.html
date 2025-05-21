@@ -1,0 +1,100 @@
+{% extends 'helldivers/base.html' %}
+{% load static %}
+
+{% block title %}Claims Management Project{% endblock title %}
+
+{% block myscripts %}
+<style>
+    .claim-container {
+        margin-top: 80px;
+        padding: 30px;
+        max-width: 900px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .claim-header {
+        text-align: center;
+        margin-bottom: 30px;
+        color: #333;
+    }
+
+    .claim-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 30px;
+    }
+
+    .claim-text {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        text-align: justify;
+        color: #444;
+        background-color: #f9f9f9;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .claim-highlight {
+        font-weight: bold;
+        color: #ff6600;
+    }
+
+    .claim-link {
+        margin-top: 20px;
+        text-align: center;
+    }
+
+    .claim-button {
+        display: inline-block;
+        padding: 12px 24px;
+        background: linear-gradient(45deg, #ff6600, #ffcc00);
+        color: white;
+        text-decoration: none;
+        border-radius: 30px;
+        font-weight: bold;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .claim-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 8px rgba(0,0,0,0.15);
+        color: white;
+    }
+
+    .achievement-box {
+        background-color: #f0f8ff;
+        border-left: 4px solid #4682b4;
+        padding: 15px;
+        margin: 20px 0;
+        border-radius: 0 8px 8px 0;
+    }
+</style>
+{% endblock myscripts %}
+
+{% block myvideo %}
+<div class="claim-container">
+    <div class="claim-header">
+        <h1>Claims Management Project</h1>
+    </div>
+
+    <div class="claim-content">
+        <div class="claim-text">
+            <p>This project represents <span class="claim-highlight">an independent course homework</span>, designed to involve students in real-world data science challenges through Kaggle competitions. The Claims Management system focuses on predicting claim approvals based on various customer and policy attributes.</p>
+
+            <div class="achievement-box">
+                <p>Through extensive feature engineering, model tuning, and ensemble techniques, we were able to achieve significant results. <span class="claim-highlight">Took a lot of effort to drop the error below 0.43</span>, which represents a substantial improvement over baseline models.</p>
+            </div>
+
+            <p>The project demonstrates practical applications of machine learning in the insurance industry, where accurate predictions can lead to more efficient operations and improved customer satisfaction.</p>
+        </div>
+
+        <div class="claim-link">
+            <a href="{% url 'publish_claim' %}" class="claim-button">View Detailed Analysis</a>
+        </div>
+    </div>
+</div>
+{% endblock myvideo %}

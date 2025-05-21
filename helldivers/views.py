@@ -236,3 +236,11 @@ class ChurnIntroView(TemplateView):
 
 class PublishChurnView(TemplateView):
     template_name = "helldivers/publish_churn.html"
+
+
+class ClaimIntroView(TemplateView):
+    template_name = "helldivers/intro_claim.html"
+
+
+class PublishClaimView(TemplateView):
+    template_name = "helldivers/publish_Claims_Management.html"
