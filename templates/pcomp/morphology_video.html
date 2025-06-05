@@ -1,0 +1,38 @@
+{% extends 'pcomp/base.html' %}
+
+{% block title %}Morphology YOLO Video{% endblock title %}
+
+{% block myvideo %}
+<div class="container mt-5 pt-5">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="mb-4">Morphology YOLO Demo Video</h1>
+            
+            <div class="text-center mb-4">
+                {% if video_url %}
+                <div class="ratio ratio-16x9">
+                    <video controls class="video-player">
+                        <source src="{{ video_url }}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+                {% elif error_message %}
+                <div class="alert alert-danger">
+                    {{ error_message }}
+                </div>
+                {% else %}
+                <div class="alert alert-warning">
+                    Video is not available at the moment. Please try again later.
+                </div>
+                {% endif %}
+            </div>
+            
+            <div class="mt-4 text-center">
+                <a href="{% url 'morphology_yolo' %}" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Back to Project
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock myvideo %}

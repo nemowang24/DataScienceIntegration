@@ -399,3 +399,38 @@ class StartEC2View(View):
 
         # Redirect back to the home page
         return redirect('pcomp_home')
+
+
+class MorphologyYoloView(TemplateView):
+    template_name = 'pcomp/morphology_yolo.html'
+
+
+class MorphologyVideoView(TemplateView):
+    template_name = 'pcomp/morphology_video.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        try:
+            # Create S3 client
+            s3_client = boto3.client(
+                "s3",
+                aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+                region_name=settings.AWS_S3_REGION_NAME,
+            )
+
+            # Generate a presigned URL for the S3 video
+            video_key = "morphology_yolo.mp4"
+            presigned_url = s3_client.generate_presigned_url(
+                "get_object",
+                Params={"Bucket": "webserver-private", "Key": video_key},
+                ExpiresIn=3600,  # URL valid for 1 hour
+            )
+
+            context['video_url'] = presigned_url
+
+        except Exception as e:
+            context['error_message'] = f"Error accessing video: {str(e)}"
+
+        return context

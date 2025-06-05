@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import PromptInputView, FilteredPromptListView, PromptListView, HomeView, StartEC2View, PromptMetaListView
+from .views import PromptInputView, FilteredPromptListView, PromptListView, HomeView, StartEC2View, PromptMetaListView, MorphologyYoloView, MorphologyVideoView
 
 urlpatterns = [
     path('', HomeView.as_view(), name='pcomp_home'),
@@ -8,4 +8,6 @@ urlpatterns = [
     path('prompts/', PromptListView.as_view(), name='prompt_list'),
     path('prompt-meta-list/', PromptMetaListView.as_view(), name='prompt_meta_list'),
     path('start-ec2/', StartEC2View.as_view(), name='start_ec2'),
+    path('morphology-yolo/', MorphologyYoloView.as_view(), name='morphology_yolo'),
+    path('morphology-video/', MorphologyVideoView.as_view(), name='morphology_video'),
 ]
