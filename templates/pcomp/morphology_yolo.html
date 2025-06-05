@@ -7,18 +7,18 @@
     <div class="row">
         <div class="col-12">
             <h1 class="mb-4">Morphology YOLO Project</h1>
-            
+
             <div class="text-center mb-4">
-                <img src="/static/pcomp/morphology_yolo.png" alt="Morphology YOLO" class="img-fluid" style="max-width: 100%; height: auto;">
+                <img src="/static/pcomp/morphology_yolo.png" alt="Morphology YOLO" class="img-fluid" style="max-width: 100%; max-height: 60vh; height: auto; object-fit: contain;">
             </div>
-            
+
             <div class="mt-4">
                 <p class="lead">
                     I trained YOLOv8 to detect objects, used MediaPipe to identify face landmarks, register the landmarks with a 3D head mesh, 
                     use landmarks to calculate the position of headmesh. Then I calculate the position of identified 'fullledbox' object in the 
                     head mesh, use morphology to calculate the pose of ledbox. Then try to track the head movement using the ledbox.
                 </p>
-                
+
                 <div class="mt-4 text-center">
                     <a href="{% url 'morphology_video' %}" class="btn btn-primary btn-lg">
                         <i class="bi bi-play-circle"></i> Watch Demo Video
