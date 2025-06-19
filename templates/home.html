@@ -99,4 +99,30 @@
             <p>Claims Management Project</p>
         </a>
     </div>
+    <hr>
+    <div class="horizontal-container">
+        {% load static %}
+        <div>
+            <img src="{% static 'AI27.png' %}" alt="AI give 27" id="ai27Image" data-bs-toggle="modal" data-bs-target="#imageModal" style="cursor: pointer;">
+        </div>
+        <a href="https://www.reddit.com/r/OpenAI/comments/1jj39nn/i_saw_some_people_talking_that_they_got_the/">
+            <p>It's interesting but true, AI tend to get 27</p>
+        </a>
+    </div>
+
+    <!-- Modal for enlarged image -->
+    <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="imageModalLabel">AI27</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <img src="{% static 'AI27.png' %}" class="img-fluid" alt="AI27 Enlarged">
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr>
 {% endblock content %}
